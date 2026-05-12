@@ -1,5 +1,6 @@
 import tkinter as tk
 from Canvas_Frame import CanvasFrame
+from Generate_Random_Graph_Sidebar import GenerateRandomGraphSidebar
 
 class MainScreen(tk.Tk):
     def __init__(self):
@@ -13,6 +14,9 @@ class MainScreen(tk.Tk):
         self.rowconfigure(0, weight=1)
         self.grid_propagate(False)
 
+        self.canvas = CanvasFrame(self)
+        self.canvas.grid(row=0, column=0, sticky="nsew")
+
         self.menu = tk.Menu(self)
         self.config(menu= self.menu)
 
@@ -22,11 +26,8 @@ class MainScreen(tk.Tk):
 
         self.create_graph_menu = tk.Menu(self.menu, tearoff= 0)
         self.menu.add_cascade(label= "Create Graph", menu= self.create_graph_menu)
-        self.create_graph_menu.add_command(label= "Create Random Graph")
+        self.create_graph_menu.add_command(label= "Create Random Graph", command= self.random_graph_sidebar)
 
-        self.canvas = CanvasFrame(self)
-        self.canvas.grid(row= 0, column=0, sticky="nsew")
-
-app = MainScreen()
-app.state("zoomed")
-app.mainloop()
+    def random_graph_sidebar(self):
+        self.generate_random_graph_sidebar = GenerateRandomGraphSidebar(self)
+        self.generate_random_graph_sidebar.grid(row=0, column=1, sticky="nsew")
