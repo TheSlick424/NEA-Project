@@ -29,5 +29,5 @@ class MainScreen(tk.Tk):
         self.create_graph_menu.add_command(label= "Create Random Graph", command= self.random_graph_sidebar)
 
     def random_graph_sidebar(self):
-        self.generate_random_graph_sidebar = GenerateRandomGraphSidebar(self)
+        self.generate_random_graph_sidebar = GenerateRandomGraphSidebar(self, self.canvas)
         self.generate_random_graph_sidebar.grid(row=0, column=1, sticky="nsew")

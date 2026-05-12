@@ -9,5 +9,4 @@ class CanvasFrame(tk.Frame):
         self.canvas.pack(fill= "both", expand = True)
 
     def generate_random_graph(self, nodes):
-        print(True)
         self.canvas.create_oval(0, 0, 500, 500, fill="red")
