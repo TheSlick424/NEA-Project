@@ -28,6 +28,25 @@ class CanvasFrame(tk.Frame):
         node_dict[self.node_count] = {"x": (xcoord1 + xcoord2) // 2,
                                       "y": (ycoord1 + ycoord2) // 2}
 
+    def add_edge(self, node1, node2, weight):
+        size = 10
+
+        xcoord1 = node_dict[node1]["x"]
+        ycoord1 = node_dict[node1]["y"]
+        xcoord2 = node_dict[node2]["x"]
+        ycoord2 = node_dict[node2]["y"]
+
+        self.canvas.create_line(xcoord1, ycoord1, xcoord2, ycoord2, fill = "red", width = size)
+        self.canvas.create_text(node_dict[node1]["x"], node_dict[node1]["y"], text=node1,
+                                font=("Helvetica", 20))
+        self.canvas.create_text(node_dict[node2]["x"], node_dict[node2]["y"], text=node2,
+                                font=("Helvetica", 20))
+
+        node_dict[node1][node2] = weight
+        node_dict[node2][node1] = weight
+
+        print(node_dict)
+
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
         cols = math.ceil(math.sqrt(nodes))

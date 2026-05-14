@@ -61,11 +61,11 @@ class ManualGraphSidebar(tk.Frame):
         self.label['text'] = "Generate Manual Graph"
 
     def add_edge(self):
-        self.edge = AddEdge(self, self.canvas)
+        self.edge = AddEdgeFrame(self, self.canvas)
         self.edge.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
         self.label['text'] = "Enter Node Numbers"
 
-class AddEdge(tk.Frame):
+class AddEdgeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
         super().__init__(parent, bg= "red4")
 
@@ -74,6 +74,7 @@ class AddEdge(tk.Frame):
         self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
         self.rowconfigure(2, weight=1)
+        self.rowconfigure(3, weight=1)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
 
@@ -83,8 +84,24 @@ class AddEdge(tk.Frame):
         self.label_node2 = tk.Label(self, text= "Node 2:", font= ("Helvetica", 20), bg= "red4")
         self.label_node2.grid(row=1, column=0)
 
+        self.label_weight = tk.Label(self, text= "Weight:", font= ("Helvetica", 20), bg= "red4")
+        self.label_weight.grid(row=2, column=0)
+
         self.entry_node1 = tk.Entry(self, font= ("Helvetica", 20))
         self.entry_node1.grid(row=0, column=1)
 
         self.entry_node2 = tk.Entry(self, font= ("Helvetica", 20))
         self.entry_node2.grid(row=1, column=1)
+
+        self.entry_weight = tk.Entry(self, font= ("Helvetica", 20))
+        self.entry_weight.grid(row=2, column=1)
+
+        self.add_edge_button = tk.Button(self, text= "Add Edge", font= ("Helvetica", 20), bg= "DarkGreen",
+                                         command = self.add_edge)
+        self.add_edge_button.grid(row=3, column= 0, columnspan= 2)
+
+    def add_edge(self):
+        self.canvas.add_edge(int(self.entry_node1.get()),
+                             int(self.entry_node2.get()),
+                             int(self.entry_weight.get()))
+        self.destroy()
