@@ -19,6 +19,13 @@ class CanvasFrame(tk.Frame):
 
         node_count = 0
 
+        first_node = randint(0, nodes - 1)
+        last_node = randint(0, nodes - 1)
+        while first_node == last_node:
+            last_node = randint(0, nodes)
+            print(first_node, last_node)
+        print(first_node, last_node)
+
         for row in range(rows):
             for col in range(cols):
                 if node_count >= nodes:
@@ -33,5 +40,11 @@ class CanvasFrame(tk.Frame):
 
                 x = randint(cell_x1, cell_x2 - node_size)
                 y = randint(cell_y1, cell_y2 - node_size)
-                self.canvas.create_oval(x, y, x + node_size, y + node_size, fill = "red", outline= "red")
+
+                if node_count == first_node:
+                    self.canvas.create_oval(x, y, x + node_size, y + node_size, fill = "green", outline= "green")
+                elif node_count == last_node:
+                    self.canvas.create_oval(x, y, x + node_size, y + node_size, fill = "black", outline= "black")
+                else:
+                    self.canvas.create_oval(x, y, x + node_size, y + node_size, fill = "red", outline= "red")
                 node_count += 1

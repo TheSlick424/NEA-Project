@@ -6,7 +6,7 @@ class GenerateRandomGraphSidebar(tk.Frame):
 
         self.canvas = canvas_frame
 
-        self.label = tk.Label(self, text = "Enter Number of Nodes (2-500)", font= ("Helvetica", 20), bg= "red4",
+        self.label = tk.Label(self, text = "Enter Number of Nodes (2-750)", font= ("Helvetica", 20), bg= "red4",
                               fg= "white")
         self.label.place(relx= 0.5, rely= 0.3, anchor= "center")
 

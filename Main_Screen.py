@@ -1,6 +1,7 @@
 import tkinter as tk
 from Canvas_Frame import CanvasFrame
 from Generate_Random_Graph_Sidebar import GenerateRandomGraphSidebar
+from Manual_Graph_Generation_Sidebar import ManualGraphSidebar
 
 class MainScreen(tk.Tk):
     def __init__(self):
@@ -26,7 +27,13 @@ class MainScreen(tk.Tk):
 
         self.create_graph_menu = tk.Menu(self.menu, tearoff= 0)
         self.menu.add_cascade(label= "Create Graph", menu= self.create_graph_menu)
+        self.create_graph_menu.add_cascade(label= "Create Manual Graph", command= self.manual_graph_sidebar)
         self.create_graph_menu.add_command(label= "Create Random Graph", command= self.random_graph_sidebar)
+
+    def manual_graph_sidebar(self):
+        self.generate_manual_graph_sidebar = ManualGraphSidebar(self, self.canvas)
+        self.generate_manual_graph_sidebar.grid(row=0, column=1, sticky="nsew")
+
 
     def random_graph_sidebar(self):
         self.generate_random_graph_sidebar = GenerateRandomGraphSidebar(self, self.canvas)
