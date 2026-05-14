@@ -9,6 +9,16 @@ class CanvasFrame(tk.Frame):
         self.canvas = tk.Canvas(self, bg = "Midnight Blue")
         self.canvas.pack(fill= "both", expand = True)
 
+    def add_node(self, event):
+        size = 50
+
+        xcoord1 = event.x - (size / 2)
+        ycoord1 = event.y - (size / 2)
+        xcoord2 = event.x + (size / 2)
+        ycoord2 = event.y + (size / 2)
+
+        self.canvas.create_oval(xcoord1, ycoord1, xcoord2, ycoord2, fill = "red", outline = "red")
+
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
         cols = math.ceil(math.sqrt(nodes))
