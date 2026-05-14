@@ -1,6 +1,7 @@
 import tkinter as tk
 from random import randint
 import math
+from Dictionaries import node_dict
 
 class CanvasFrame(tk.Frame):
     def __init__(self, parent):
@@ -8,6 +9,8 @@ class CanvasFrame(tk.Frame):
 
         self.canvas = tk.Canvas(self, bg = "Midnight Blue")
         self.canvas.pack(fill= "both", expand = True)
+
+        self.node_count = 0
 
     def add_node(self, event):
         size = 50
@@ -17,7 +20,13 @@ class CanvasFrame(tk.Frame):
         xcoord2 = event.x + (size / 2)
         ycoord2 = event.y + (size / 2)
 
+        self.node_count += 1
         self.canvas.create_oval(xcoord1, ycoord1, xcoord2, ycoord2, fill = "red", outline = "red")
+        self.canvas.create_text((xcoord1 + xcoord2) // 2, (ycoord1 + ycoord2) // 2, text= self.node_count,
+                                font= ("Helvetica", 20))
+
+        node_dict[self.node_count] = {"x": (xcoord1 + xcoord2) // 2,
+                                      "y": (ycoord1 + ycoord2) // 2}
 
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
