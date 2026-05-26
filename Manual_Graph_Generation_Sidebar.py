@@ -24,7 +24,8 @@ class ManualGraphSidebar(tk.Frame):
                                          command= self.add_node)
         self.add_node_button.grid(row= 1, column= 0)
 
-        self.remove_node_button = tk.Button(self, text= "Remove Node", font= ("Helvetica", 20), bg= "DarkRed")
+        self.remove_node_button = tk.Button(self, text= "Remove Node", font= ("Helvetica", 20), bg= "DarkRed",
+                                            command= self.remove_node)
         self.remove_node_button.grid(row= 1, column= 1)
 
         self.add_edge_button = tk.Button(self, text= "Add Edge", font= ("Helvetica", 20), bg= "DarkGreen",
@@ -64,6 +65,11 @@ class ManualGraphSidebar(tk.Frame):
         self.edge = AddEdgeFrame(self, self.canvas)
         self.edge.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
         self.label['text'] = "Enter Node Numbers"
+
+    def remove_node(self):
+        self.removing_node = RemoveNodeFrame(self, self.canvas)
+        self.removing_node.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
+        self.label["text"] = "Select Node In List To Remove"
 
 class AddEdgeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
@@ -105,3 +111,23 @@ class AddEdgeFrame(tk.Frame):
                              int(self.entry_node2.get()),
                              int(self.entry_weight.get()))
         self.destroy()
+
+class RemoveNodeFrame(tk.Frame):
+    def __init__(self, parent, canvas_frame):
+        super().__init__(parent, bg= "red4")
+
+        self.canvas = canvas_frame
+
+        self.button = tk.Button(self, text= "Remove Node", font= ("Helvetica", 20), bg = "red4",
+                                command= self.remove_node)
+        self.button.place(relx= 0.5, rely= 0.5, anchor= "center")
+
+        self.listbox = parent.listbox
+
+    def remove_node(self):
+        if self.listbox.curselection():
+            self.canvas.remove_node(self.listbox.get(self.listbox.curselection()))
+            self.listbox.delete(self.listbox.curselection())
+            self.destroy()
+        else:
+            self.destroy()

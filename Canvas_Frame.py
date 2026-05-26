@@ -25,8 +25,17 @@ class CanvasFrame(tk.Frame):
         self.canvas.create_text((xcoord1 + xcoord2) // 2, (ycoord1 + ycoord2) // 2, text= self.node_count,
                                 font= ("Helvetica", 20))
 
-        node_dict[self.node_count] = {"x": (xcoord1 + xcoord2) // 2,
+        node_dict[f"Node {self.node_count}"] = {"x": (xcoord1 + xcoord2) // 2,
                                       "y": (ycoord1 + ycoord2) // 2}
+
+    def remove_node(self, node):
+        xcoord = node_dict[node]["x"]
+        ycoord = node_dict[node]["y"]
+
+        self.canvas.create_oval(xcoord - 50, ycoord - 50, xcoord + 50, ycoord + 50, fill = "Midnight Blue",
+                                outline = "Midnight Blue")
+
+        node_dict.pop(node)
 
     def add_edge(self, node1, node2, weight):
         size = 10
@@ -42,10 +51,8 @@ class CanvasFrame(tk.Frame):
         self.canvas.create_text(node_dict[node2]["x"], node_dict[node2]["y"], text=node2,
                                 font=("Helvetica", 20))
 
-        node_dict[node1][node2] = weight
-        node_dict[node2][node1] = weight
-
-        print(node_dict)
+        node_dict[f"Node {node1}"][f"Node {node2}"] = weight
+        node_dict[f"Node {node2}"][f"Node {node1}"] = weight
 
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
