@@ -83,7 +83,12 @@ class CanvasFrame(tk.Frame):
         del node_dict[node1][node2]
         del node_dict[node2][node1]
 
-        print(node_dict)
+    def set_start_node(self, node):
+        xcoord = node_dict[node]["x"]
+        ycoord = node_dict[node]["y"]
+
+        self.canvas.create_oval(xcoord - 25, ycoord - 25, xcoord + 25, ycoord + 25, fill = "DarkGreen", outline= "DarkGreen")
+        self.canvas.create_text(xcoord, ycoord, text= node[5:], font = ("Helvetica", 20))
 
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")

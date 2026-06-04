@@ -36,7 +36,8 @@ class ManualGraphSidebar(tk.Frame):
                                             command= self.remove_edge)
         self.remove_edge_button.grid(row= 2, column= 1)
 
-        self.set_start_node_button = tk.Button(self, text= "Set Start Node", font= ("Helvetica", 20), bg= "gold2")
+        self.set_start_node_button = tk.Button(self, text= "Set Start Node", font= ("Helvetica", 20), bg= "gold2",
+                                               command= self.set_start_node)
         self.set_start_node_button.grid(row= 3, column= 0)
 
         self.set_end_node_button = tk.Button(self, text= "Set End Node", font= ("Helvetica", 20), bg = "orange3")
@@ -76,6 +77,11 @@ class ManualGraphSidebar(tk.Frame):
         self.removing_edge = RemoveEdgeFrame(self, self.canvas)
         self.removing_edge.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
         self.label["text"] = "Select 2 Nodes To Remove Edge"
+
+    def set_start_node(self):
+        self.setting_start_node = SetStartNodeFrame(self, self.canvas)
+        self.setting_start_node.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
+        self.label["text"] = "Select 1 Node To Set As Start"
 
 class AddEdgeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
@@ -157,6 +163,25 @@ class RemoveEdgeFrame(tk.Frame):
                 arr.append(self.listbox.get(value))
 
             self.canvas.remove_edge(arr)
+            self.destroy()
+        else:
+            self.destroy()
+
+class SetStartNodeFrame(tk.Frame):
+    def __init__(self, parent, canvas_frame):
+        super().__init__(parent, bg= "red4")
+
+        self.canvas = canvas_frame
+
+        self.set_start_node_button = tk.Button(self, text="Set Start Node", font=("Helvetica", 20), bg="gold2",
+                                               command= self.set_start_node)
+        self.set_start_node_button.place(relx= 0.5, rely= 0.5, anchor= "center")
+
+        self.listbox = parent.listbox
+
+    def set_start_node(self):
+        if self.listbox.curselection():
+            self.canvas.set_start_node(self.listbox.get(self.listbox.curselection()))
             self.destroy()
         else:
             self.destroy()
