@@ -28,12 +28,23 @@ class CanvasFrame(tk.Frame):
         node_dict[f"Node {self.node_count}"] = {"x": (xcoord1 + xcoord2) // 2,
                                       "y": (ycoord1 + ycoord2) // 2}
 
+
     def remove_node(self, node):
         xcoord = node_dict[node]["x"]
         ycoord = node_dict[node]["y"]
 
-        self.canvas.create_oval(xcoord - 50, ycoord - 50, xcoord + 50, ycoord + 50, fill = "Midnight Blue",
+        self.canvas.create_oval(xcoord - 25, ycoord - 25, xcoord + 25, ycoord + 25, fill = "Midnight Blue",
                                 outline = "Midnight Blue")
+
+        for key in node_dict[node]:
+            if key[0:4] == "Node":
+                xcoord2 = node_dict[key]["x"]
+                ycoord2 = node_dict[key]["y"]
+                self.canvas.create_line(xcoord, ycoord, xcoord2, ycoord2, fill = "Midnight Blue", width = 10)
+                self.canvas.create_oval(xcoord2 - 25, ycoord2 - 25, xcoord2 + 25, ycoord2 + 25, fill="red", outline="red")
+                self.canvas.create_text(node_dict[key]["x"], node_dict[key]["y"], text=key[5:],
+                                        font=("Helvetica", 20))
+                del node_dict[key][node]
 
         node_dict.pop(node)
 
