@@ -40,18 +40,16 @@ class ManualGraphSidebar(tk.Frame):
                                                command= self.set_start_node)
         self.set_start_node_button.grid(row= 3, column= 0)
 
-        self.set_end_node_button = tk.Button(self, text= "Set End Node", font= ("Helvetica", 20), bg = "orange3")
+        self.set_end_node_button = tk.Button(self, text= "Set End Node", font= ("Helvetica", 20), bg = "orange3",
+                                             command= self.set_end_node)
         self.set_end_node_button.grid(row= 3, column= 1)
 
         self.listbox = tk.Listbox(self, font= ("Helvetica", 20), selectmode= "multiple")
         self.listbox.grid(row= 4, column= 0, columnspan= 2, sticky= "nsew",
                           padx = 50)
 
-        self.edit_button = tk.Button(self, text= "Edit", font= ("Helvetica", 20), bg= "RoyalBlue1")
-        self.edit_button.grid(row= 5, column= 0)
-
         self.run_algorithm_button = tk.Button(self, text= "Run Algorithm", font= ("Helvetica", 20), bg= "purple4")
-        self.run_algorithm_button.grid(row= 5, column= 1)
+        self.run_algorithm_button.grid(row= 5, column= 0, columnspan= 2)
 
     def add_node(self):
         self.label['text'] = "Click To Add Node"
@@ -82,6 +80,11 @@ class ManualGraphSidebar(tk.Frame):
         self.setting_start_node = SetStartNodeFrame(self, self.canvas)
         self.setting_start_node.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
         self.label["text"] = "Select 1 Node To Set As Start"
+
+    def set_end_node(self):
+        self.setting_end_node = SetEndNodeFrame(self, self.canvas)
+        self.setting_end_node.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
+        self.label["text"] = "Select 1 Node To Set As End"
 
 class AddEdgeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
@@ -118,10 +121,13 @@ class AddEdgeFrame(tk.Frame):
                                          command = self.add_edge)
         self.add_edge_button.grid(row=3, column= 0, columnspan= 2)
 
+        self.label = parent.label
+
     def add_edge(self):
         self.canvas.add_edge(int(self.entry_node1.get()),
                              int(self.entry_node2.get()),
                              int(self.entry_weight.get()))
+        self.label["text"] = "Generate Manual Graph"
         self.destroy()
 
 class RemoveNodeFrame(tk.Frame):
@@ -135,13 +141,17 @@ class RemoveNodeFrame(tk.Frame):
         self.button.place(relx= 0.5, rely= 0.5, anchor= "center")
 
         self.listbox = parent.listbox
+        self.label = parent.label
 
     def remove_node(self):
         if self.listbox.curselection():
             self.canvas.remove_node(self.listbox.get(self.listbox.curselection()))
             self.listbox.delete(self.listbox.curselection())
+            self.label["text"] = "Generate Manual Graph"
+            self.listbox.selection_clear(0, tk.END)
             self.destroy()
         else:
+            self.label["text"] = "Generate Manual Graph"
             self.destroy()
 
 class RemoveEdgeFrame(tk.Frame):
@@ -155,6 +165,7 @@ class RemoveEdgeFrame(tk.Frame):
         self.button.place(relx= 0.5, rely= 0.5, anchor= "center")
 
         self.listbox = parent.listbox
+        self.label = parent.label
 
     def remove_edge(self):
         if self.listbox.curselection():
@@ -163,8 +174,11 @@ class RemoveEdgeFrame(tk.Frame):
                 arr.append(self.listbox.get(value))
 
             self.canvas.remove_edge(arr)
+            self.label["text"] = "Generate Manual Graph"
+            self.listbox.selection_clear(0, tk.END)
             self.destroy()
         else:
+            self.label["text"] = "Generate Manual Graph"
             self.destroy()
 
 class SetStartNodeFrame(tk.Frame):
@@ -178,10 +192,37 @@ class SetStartNodeFrame(tk.Frame):
         self.set_start_node_button.place(relx= 0.5, rely= 0.5, anchor= "center")
 
         self.listbox = parent.listbox
+        self.label = parent.label
 
     def set_start_node(self):
         if self.listbox.curselection():
             self.canvas.set_start_node(self.listbox.get(self.listbox.curselection()))
+            self.label["text"] = "Generate Manual Graph"
+            self.listbox.selection_clear(0, tk.END)
             self.destroy()
         else:
+            self.label["text"] = "Generate Manual Graph"
+            self.destroy()
+
+class SetEndNodeFrame(tk.Frame):
+    def __init__(self, parent, canvas_frame):
+        super().__init__(parent, bg= "red4")
+
+        self.canvas = canvas_frame
+
+        self.set_end_node_button = tk.Button(self, text="Set End Node", font=("Helvetica", 20), bg="orange3",
+                                             command= self.set_end_node)
+        self.set_end_node_button.place(relx= 0.5, rely= 0.5, anchor= "center")
+
+        self.listbox = parent.listbox
+        self.label = parent.label
+
+    def set_end_node(self):
+        if self.listbox.curselection():
+            self.canvas.set_end_node(self.listbox.get(self.listbox.curselection()))
+            self.label["text"] = "Generate Manual Graph"
+            self.listbox.selection_clear(0, tk.END)
+            self.destroy()
+        else:
+            self.label["text"] = "Generate Manual Graph"
             self.destroy()

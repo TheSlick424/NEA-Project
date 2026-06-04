@@ -90,6 +90,14 @@ class CanvasFrame(tk.Frame):
         self.canvas.create_oval(xcoord - 25, ycoord - 25, xcoord + 25, ycoord + 25, fill = "DarkGreen", outline= "DarkGreen")
         self.canvas.create_text(xcoord, ycoord, text= node[5:], font = ("Helvetica", 20))
 
+    def set_end_node(self, node):
+        xcoord = node_dict[node]["x"]
+        ycoord = node_dict[node]["y"]
+
+        self.canvas.create_oval(xcoord - 25, ycoord - 25, xcoord + 25, ycoord + 25, fill="black",
+                                outline="black")
+        self.canvas.create_text(xcoord, ycoord, text=node[5:], font=("Helvetica", 20), fill= "white")
+
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
         cols = math.ceil(math.sqrt(nodes))
