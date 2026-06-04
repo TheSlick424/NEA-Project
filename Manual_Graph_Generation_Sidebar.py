@@ -32,7 +32,8 @@ class ManualGraphSidebar(tk.Frame):
                                          command= self.add_edge)
         self.add_edge_button.grid(row= 2, column= 0)
 
-        self.remove_edge_button = tk.Button(self, text= "Remove Edge", font= ("Helvetica", 20), bg= "DarkRed")
+        self.remove_edge_button = tk.Button(self, text= "Remove Edge", font= ("Helvetica", 20), bg= "DarkRed",
+                                            command= self.remove_edge)
         self.remove_edge_button.grid(row= 2, column= 1)
 
         self.set_start_node_button = tk.Button(self, text= "Set Start Node", font= ("Helvetica", 20), bg= "gold2")
@@ -41,7 +42,7 @@ class ManualGraphSidebar(tk.Frame):
         self.set_end_node_button = tk.Button(self, text= "Set End Node", font= ("Helvetica", 20), bg = "orange3")
         self.set_end_node_button.grid(row= 3, column= 1)
 
-        self.listbox = tk.Listbox(self, font= ("Helvetica", 20))
+        self.listbox = tk.Listbox(self, font= ("Helvetica", 20), selectmode= "multiple")
         self.listbox.grid(row= 4, column= 0, columnspan= 2, sticky= "nsew",
                           padx = 50)
 
@@ -69,7 +70,12 @@ class ManualGraphSidebar(tk.Frame):
     def remove_node(self):
         self.removing_node = RemoveNodeFrame(self, self.canvas)
         self.removing_node.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
-        self.label["text"] = "Select Node In List To Remove"
+        self.label["text"] = "Select 1 Node In List To Remove"
+
+    def remove_edge(self):
+        self.removing_edge = RemoveEdgeFrame(self, self.canvas)
+        self.removing_edge.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
+        self.label["text"] = "Select 2 Nodes To Remove Edge"
 
 class AddEdgeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
@@ -128,6 +134,29 @@ class RemoveNodeFrame(tk.Frame):
         if self.listbox.curselection():
             self.canvas.remove_node(self.listbox.get(self.listbox.curselection()))
             self.listbox.delete(self.listbox.curselection())
+            self.destroy()
+        else:
+            self.destroy()
+
+class RemoveEdgeFrame(tk.Frame):
+    def __init__(self, parent, canvas_frame):
+        super().__init__(parent, bg= "red4")
+
+        self.canvas = canvas_frame
+
+        self.button = tk.Button(self, text = "Remove Edge", font= ("Helvetica", 20), bg = "red4",
+                                command= self.remove_edge)
+        self.button.place(relx= 0.5, rely= 0.5, anchor= "center")
+
+        self.listbox = parent.listbox
+
+    def remove_edge(self):
+        if self.listbox.curselection():
+            arr = []
+            for value in self.listbox.curselection():
+                arr.append(self.listbox.get(value))
+
+            self.canvas.remove_edge(arr)
             self.destroy()
         else:
             self.destroy()
