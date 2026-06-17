@@ -28,7 +28,8 @@ class CanvasFrame(tk.Frame):
         node_dict[f"Node {self.node_count}"] = {"x": (xcoord1 + xcoord2) // 2,
                                       "y": (ycoord1 + ycoord2) // 2,
                                       "Start": False,
-                                      "End": False}
+                                      "End": False,
+                                      "Heuristic": None}
 
 
     def remove_node(self, node):
@@ -161,6 +162,10 @@ class CanvasFrame(tk.Frame):
         self.canvas.create_text(xcoord, ycoord, text=node[5:], font=("Helvetica", 20), fill= "white")
 
         node_dict[node]["End"] = True
+
+        for key in node_dict:
+            node_dict[key]["Heuristic"] = math.ceil(math.sqrt(((node_dict[key]["x"] - node_dict[node]["x"])**2) + (node_dict[key]["y"] - node_dict[node]["y"]) **2))
+        print(node_dict)
 
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
