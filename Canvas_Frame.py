@@ -26,7 +26,9 @@ class CanvasFrame(tk.Frame):
                                 font= ("Helvetica", 20))
 
         node_dict[f"Node {self.node_count}"] = {"x": (xcoord1 + xcoord2) // 2,
-                                      "y": (ycoord1 + ycoord2) // 2}
+                                      "y": (ycoord1 + ycoord2) // 2,
+                                      "Start": False,
+                                      "End": False}
 
 
     def remove_node(self, node):
@@ -40,10 +42,20 @@ class CanvasFrame(tk.Frame):
             if key[0:4] == "Node":
                 xcoord2 = node_dict[key]["x"]
                 ycoord2 = node_dict[key]["y"]
-                self.canvas.create_line(xcoord, ycoord, xcoord2, ycoord2, fill = "Midnight Blue", width = 10)
-                self.canvas.create_oval(xcoord2 - 25, ycoord2 - 25, xcoord2 + 25, ycoord2 + 25, fill="red", outline="red")
-                self.canvas.create_text(node_dict[key]["x"], node_dict[key]["y"], text=key[5:],
-                                        font=("Helvetica", 20))
+                if node_dict[key]["Start"]:
+                    self.canvas.create_oval(xcoord2 - 25, ycoord2 - 25, xcoord2 + 25, ycoord2 + 25, fill="Dark Green",
+                                            outline="DarkGreen")
+                    self.canvas.create_text(xcoord2, ycoord2, text=key[6:],
+                                            font=("Helvetica", 20))
+                elif node_dict[key]["End"]:
+                    self.canvas.create_oval(xcoord2 - 25, ycoord2 - 25, xcoord2 + 25, ycoord2 + 25, fill="Black",
+                                            outline="Black")
+                    self.canvas.create_text(xcoord2, ycoord2, text=key[6:], fill="white",
+                                            font=("Helvetica", 20))
+                else:
+                    self.canvas.create_text(xcoord2, ycoord2, text=key[6:],
+                                            font=("Helvetica", 20))
+
                 del node_dict[key][node]
 
         node_dict.pop(node)
@@ -57,10 +69,34 @@ class CanvasFrame(tk.Frame):
         ycoord2 = node_dict[f"Node {node2}"]["y"]
 
         self.canvas.create_line(xcoord1, ycoord1, xcoord2, ycoord2, fill = "red", width = size)
-        self.canvas.create_text(node_dict[f"Node {node1}"]["x"], node_dict[f"Node {node1}"]["y"], text=node1,
-                                font=("Helvetica", 20))
-        self.canvas.create_text(node_dict[f"Node {node2}"]["x"], node_dict[f"Node {node2}"]["y"], text=node2,
-                                font=("Helvetica", 20))
+
+        if node_dict[f"Node {node1}"]["Start"]:
+            self.canvas.create_oval(xcoord1 - 25, ycoord1 - 25, xcoord1 + 25, ycoord1 + 25, fill = "Dark Green",
+                                    outline= "DarkGreen")
+            self.canvas.create_text(xcoord1, ycoord1, text=node1,
+                                    font=("Helvetica", 20))
+        elif node_dict[f"Node {node1}"]["End"]:
+            self.canvas.create_oval(xcoord1 - 25, ycoord1 - 25, xcoord1 + 25, ycoord1 + 25, fill="Black",
+                                    outline="Black")
+            self.canvas.create_text(xcoord1, ycoord1, text=node1, fill= "white",
+                                    font=("Helvetica", 20))
+        else:
+            self.canvas.create_text(xcoord1, ycoord1, text=node1,
+                                    font=("Helvetica", 20))
+
+        if node_dict[f"Node {node2}"]["Start"]:
+            self.canvas.create_oval(xcoord2 - 25, ycoord2 - 25, xcoord2 + 25, ycoord2 + 25, fill = "Dark Green",
+                                    outline= "DarkGreen")
+            self.canvas.create_text(xcoord2, ycoord2, text=node2,
+                                    font=("Helvetica", 20))
+        elif node_dict[f"Node {node2}"]["End"]:
+            self.canvas.create_oval(xcoord2 - 25, ycoord2 - 25, xcoord2 + 25, ycoord2 + 25, fill="Black",
+                                    outline="Black")
+            self.canvas.create_text(xcoord2, ycoord2, text=node2, fill= "white",
+                                    font=("Helvetica", 20))
+        else:
+            self.canvas.create_text(xcoord2, ycoord2, text=node2,
+                                    font=("Helvetica", 20))
 
         node_dict[f"Node {node1}"][f"Node {node2}"] = weight
         node_dict[f"Node {node2}"][f"Node {node1}"] = weight
@@ -75,10 +111,34 @@ class CanvasFrame(tk.Frame):
         ycoord2 = node_dict[node2]["y"]
 
         self.canvas.create_line(xcoord1, ycoord1, xcoord2, ycoord2, fill = "Midnight Blue", width = 10)
-        self.canvas.create_oval(xcoord1 - 25, ycoord1 - 25, xcoord1 + 25, ycoord1 + 25, fill= "red", outline = "red")
-        self.canvas.create_text(xcoord1, ycoord1, text = node1[5:], font= ("Helvetica", 20))
-        self.canvas.create_oval(xcoord2 - 25, ycoord2 - 25, xcoord2 + 25, ycoord2 + 25, fill="red", outline="red")
-        self.canvas.create_text(xcoord2, ycoord2, text=node2[5:], font=("Helvetica", 20))
+
+        if node_dict[node1]["Start"]:
+            self.canvas.create_oval(xcoord1 - 25, ycoord1 - 25, xcoord1 + 25, ycoord1 + 25, fill = "Dark Green",
+                                    outline= "DarkGreen")
+            self.canvas.create_text(xcoord1, ycoord1, text=node1[5:],
+                                    font=("Helvetica", 20))
+        elif node_dict[node1]["End"]:
+            self.canvas.create_oval(xcoord1 - 25, ycoord1 - 25, xcoord1 + 25, ycoord1 + 25, fill="Black",
+                                    outline="Black")
+            self.canvas.create_text(xcoord1, ycoord1, text=node1[5:], fill= "white",
+                                    font=("Helvetica", 20))
+        else:
+            self.canvas.create_text(xcoord1, ycoord1, text=node1[5:],
+                                    font=("Helvetica", 20))
+
+        if node_dict[node2]["Start"]:
+            self.canvas.create_oval(xcoord2 - 25, ycoord2 - 25, xcoord2 + 25, ycoord2 + 25, fill = "Dark Green",
+                                    outline= "DarkGreen")
+            self.canvas.create_text(xcoord2, ycoord2, text=node2[5:],
+                                    font=("Helvetica", 20))
+        elif node_dict[node2]["End"]:
+            self.canvas.create_oval(xcoord2 - 25, ycoord2 - 25, xcoord2 + 25, ycoord2 + 25, fill="Black",
+                                    outline="Black")
+            self.canvas.create_text(xcoord2, ycoord2, text=node2[5:], fill= "white",
+                                    font=("Helvetica", 20))
+        else:
+            self.canvas.create_text(xcoord2, ycoord2, text=node2[5:],
+                                    font=("Helvetica", 20))
 
         del node_dict[node1][node2]
         del node_dict[node2][node1]
@@ -90,6 +150,8 @@ class CanvasFrame(tk.Frame):
         self.canvas.create_oval(xcoord - 25, ycoord - 25, xcoord + 25, ycoord + 25, fill = "DarkGreen", outline= "DarkGreen")
         self.canvas.create_text(xcoord, ycoord, text= node[5:], font = ("Helvetica", 20))
 
+        node_dict[node]["Start"] = True
+
     def set_end_node(self, node):
         xcoord = node_dict[node]["x"]
         ycoord = node_dict[node]["y"]
@@ -97,6 +159,8 @@ class CanvasFrame(tk.Frame):
         self.canvas.create_oval(xcoord - 25, ycoord - 25, xcoord + 25, ycoord + 25, fill="black",
                                 outline="black")
         self.canvas.create_text(xcoord, ycoord, text=node[5:], font=("Helvetica", 20), fill= "white")
+
+        node_dict[node]["End"] = True
 
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
