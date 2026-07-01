@@ -165,7 +165,6 @@ class CanvasFrame(tk.Frame):
 
         for key in node_dict:
             node_dict[key]["Heuristic"] = math.ceil(math.sqrt(((node_dict[key]["x"] - node_dict[node]["x"])**2) + (node_dict[key]["y"] - node_dict[node]["y"]) **2))
-        print(node_dict)
 
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
