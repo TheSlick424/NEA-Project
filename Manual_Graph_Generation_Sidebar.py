@@ -1,4 +1,5 @@
 import tkinter as tk
+from Dictionaries import node_dict, THE_path
 
 class ManualGraphSidebar(tk.Frame):
     def __init__(self, parent, canvas_frame):
@@ -48,7 +49,8 @@ class ManualGraphSidebar(tk.Frame):
         self.listbox.grid(row= 4, column= 0, columnspan= 2, sticky= "nsew",
                           padx = 50)
 
-        self.run_algorithm_button = tk.Button(self, text= "Run Algorithm", font= ("Helvetica", 20), bg= "purple4")
+        self.run_algorithm_button = tk.Button(self, text= "Run Algorithm", font= ("Helvetica", 20), bg= "purple4",
+                                              command= self.a_star_algorithm)
         self.run_algorithm_button.grid(row= 5, column= 0, columnspan= 2)
 
     def add_node(self):
@@ -85,6 +87,54 @@ class ManualGraphSidebar(tk.Frame):
         self.setting_end_node = SetEndNodeFrame(self, self.canvas)
         self.setting_end_node.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
         self.label["text"] = "Select 1 Node To Set As End"
+
+    def a_star_algorithm(self):
+        THE_path = {}
+        shortest_path = []
+        start = None
+        goal = None
+
+        for node in node_dict:
+            THE_path[node] = {"Path Distance": float("inf"),
+                              "Heuristic": 0,
+                              "Combined Distance": float("inf"),
+                              "Previous Node": None}
+            if node_dict[node]["Start"]:
+                start = node
+            elif node_dict[node]["End"]:
+                goal = node
+
+        THE_path[start]["Combined Distance"] = 0
+        THE_path[start]["Path Distance"] = 0
+
+        while node_dict:
+            shortest = None
+
+            for node in node_dict:
+                if shortest is None:
+                    shortest = node
+                elif THE_path[node]["Combined Distance"] < THE_path[shortest]["Combined Distance"]:
+                    shortest = node
+
+            for neighbour, path_cost in node_dict[shortest].items():
+                if neighbour in node_dict and THE_path[shortest]["Path Distance"] + node_dict[shortest][neighbour] < \
+                        THE_path[neighbour]["Path Distance"]:
+                    THE_path[neighbour]["Path Distance"] = THE_path[shortest]["Path Distance"] + node_dict[shortest][
+                        neighbour]
+                    THE_path[neighbour]["Combined Distance"] = THE_path[neighbour]["Path Distance"] + \
+                                                               THE_path[neighbour]["Heuristic"]
+                    THE_path[neighbour]["Previous Node"] = shortest
+
+            node_dict.pop(shortest)
+
+        current_node = goal
+        while current_node is not start:
+            shortest_path.insert(0, current_node)
+            current_node = THE_path[current_node]["Previous Node"]
+
+        shortest_path.insert(0, start)
+        print(shortest_path)
+
 
 class AddEdgeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
