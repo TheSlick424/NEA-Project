@@ -31,10 +31,12 @@ class MainScreen(tk.Tk):
         self.create_graph_menu.add_command(label= "Create Random Graph", command= self.random_graph_sidebar)
 
     def manual_graph_sidebar(self):
+        self.canvas.canvas.delete("all")
         self.generate_manual_graph_sidebar = ManualGraphSidebar(self, self.canvas)
         self.generate_manual_graph_sidebar.grid(row=0, column=1, sticky="nsew")
 
 
     def random_graph_sidebar(self):
+        self.canvas.canvas.delete("all")
         self.generate_random_graph_sidebar = GenerateRandomGraphSidebar(self, self.canvas)
         self.generate_random_graph_sidebar.grid(row=0, column=1, sticky="nsew")
