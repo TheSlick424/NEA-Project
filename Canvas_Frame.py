@@ -29,7 +29,8 @@ class CanvasFrame(tk.Frame):
                                       "y": (ycoord1 + ycoord2) // 2,
                                       "Start": False,
                                       "End": False,
-                                      "Heuristic": None}
+                                      "Heuristic": None,
+                                      "Neighbours": {}}
 
 
     def remove_node(self, node):
@@ -99,8 +100,8 @@ class CanvasFrame(tk.Frame):
             self.canvas.create_text(xcoord2, ycoord2, text=node2,
                                     font=("Helvetica", 20))
 
-        node_dict[f"Node {node1}"][f"Node {node2}"] = weight
-        node_dict[f"Node {node2}"][f"Node {node1}"] = weight
+        node_dict[f"Node {node1}"]["Neighbours"] = {f"Node {node2}": weight}
+        node_dict[f"Node {node2}"]["Neighbours"] = {f"Node {node1}": weight}
 
     def remove_edge(self, nodes):
         node1 = nodes[0]
@@ -141,8 +142,8 @@ class CanvasFrame(tk.Frame):
             self.canvas.create_text(xcoord2, ycoord2, text=node2[5:],
                                     font=("Helvetica", 20))
 
-        del node_dict[node1][node2]
-        del node_dict[node2][node1]
+        del node_dict[node1]["Neighbours"][node2]
+        del node_dict[node2]["Neighbours"][node1]
 
     def set_start_node(self, node):
         xcoord = node_dict[node]["x"]
