@@ -282,7 +282,6 @@ class AStarAlgorithmFrame(tk.Frame):
         THE_path[start]["Path Distance"] = 0
 
         step_count += 1
-        self.textbox.insert(tk.END, f"{step_count}) Finished setup of all libraries\n")
 
         while node_dict:
             shortest = None
@@ -294,24 +293,19 @@ class AStarAlgorithmFrame(tk.Frame):
                     shortest = node
 
             step_count += 1
-            self.textbox.insert(tk.END, f"{step_count}) Found the current shortest node to be {shortest}\n")
 
             for neighbour, path_cost in node_dict[shortest]["Neighbours"].items():
                 if neighbour == THE_path[shortest]["Previous Node"]:
                     continue
 
                 step_count += 1
-                self.textbox.insert(tk.END, f"{step_count}) Checking edge between {shortest} and {neighbour}\n")
                 if neighbour in node_dict and THE_path[shortest]["Path Distance"] + node_dict[shortest]["Neighbours"][neighbour] < \
                         THE_path[neighbour]["Path Distance"]:
                     THE_path[neighbour]["Path Distance"] = THE_path[shortest]["Path Distance"] + node_dict[shortest]["Neighbours"][neighbour]
                     step_count += 1
-                    self.textbox.insert(tk.END, f'''{step_count}) The path from {shortest} to {neighbour} is shorter than the original path we had for {neighbour}. This means we change the distance path distance value of {neighbour}
-to {THE_path[neighbour]["Path Distance"]}\n''')
                     THE_path[neighbour]["Combined Distance"] = THE_path[neighbour]["Path Distance"] + \
                                                                THE_path[neighbour]["Heuristic"]
                     THE_path[neighbour]["Previous Node"] = shortest
-
 
             node_dict.pop(shortest)
 
