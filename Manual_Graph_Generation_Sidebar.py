@@ -1,4 +1,5 @@
 import tkinter as tk
+
 from Dictionaries import node_dict, THE_path
 
 class ManualGraphSidebar(tk.Frame):
@@ -246,7 +247,7 @@ class AStarAlgorithmFrame(tk.Frame):
         self.columnconfigure(1, weight = 1)
         self.grid_propagate(False)
 
-        self.textbox = tk.Text(self, font= ("Helvetica", 15))
+        self.textbox = tk.Text(self, wrap= tk.WORD, font= ("Helvetica", 15))
         self.textbox.grid(row = 0, column= 0, columnspan= 2, sticky= "nsew")
 
         self.label = tk.Label(self, text= "Speed:", font= ("Helvetica", 20), bg= "red4", fg= "white")
@@ -278,10 +279,18 @@ class AStarAlgorithmFrame(tk.Frame):
             elif node_dict[node]["End"]:
                 goal = node
 
+        step_count += 1
+        self.textbox.insert(tk.END, f"{step_count}) Set the path and combined distance of all nodes to infinity.\n")
+
         THE_path[start]["Combined Distance"] = 0
         THE_path[start]["Path Distance"] = 0
 
         step_count += 1
+        self.textbox.insert(tk.END, f"{step_count}) Set the path and combined distance of start node to 0.\n")
+
+        
+        for key in THE_path:
+            self.textbox.insert(tk.END, f"{key} {THE_path[key]["Path Distance"]} {THE_path[key]["Heuristic"]} {THE_path[key]["Combined Distance"]} {THE_path[key]["Previous Node"]}\n")
 
         while node_dict:
             shortest = None
