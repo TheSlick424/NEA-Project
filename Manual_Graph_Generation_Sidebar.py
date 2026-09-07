@@ -246,8 +246,8 @@ class AStarAlgorithmFrame(tk.Frame):
         self.columnconfigure(1, weight = 1)
         self.grid_propagate(False)
 
-        self.listbox = tk.Listbox(self)
-        self.listbox.grid(row = 0, column= 0, columnspan= 2, sticky= "nsew")
+        self.textbox = tk.Text(self, font= ("Helvetica", 15))
+        self.textbox.grid(row = 0, column= 0, columnspan= 2, sticky= "nsew")
 
         self.label = tk.Label(self, text= "Speed:", font= ("Helvetica", 20), bg= "red4", fg= "white")
         self.label.grid(row= 1, column= 0, sticky= "nsew")
@@ -266,6 +266,7 @@ class AStarAlgorithmFrame(tk.Frame):
         shortest_path = []
         start = None
         goal = None
+        step_count = 0
 
         for node in node_dict:
             THE_path[node] = {"Path Distance": float("inf"),
@@ -280,6 +281,9 @@ class AStarAlgorithmFrame(tk.Frame):
         THE_path[start]["Combined Distance"] = 0
         THE_path[start]["Path Distance"] = 0
 
+        step_count += 1
+        self.textbox.insert(tk.END, f"{step_count}) Finished setup of all libraries\n")
+
         while node_dict:
             shortest = None
 
@@ -289,14 +293,25 @@ class AStarAlgorithmFrame(tk.Frame):
                 elif THE_path[node]["Combined Distance"] < THE_path[shortest]["Combined Distance"]:
                     shortest = node
 
-            for neighbour, path_cost in node_dict[shortest].items():
-                if neighbour in node_dict and THE_path[shortest]["Path Distance"] + node_dict[shortest][neighbour] < \
+            step_count += 1
+            self.textbox.insert(tk.END, f"{step_count}) Found the current shortest node to be {shortest}\n")
+
+            for neighbour, path_cost in node_dict[shortest]["Neighbours"].items():
+                if neighbour == THE_path[shortest]["Previous Node"]:
+                    continue
+
+                step_count += 1
+                self.textbox.insert(tk.END, f"{step_count}) Checking edge between {shortest} and {neighbour}\n")
+                if neighbour in node_dict and THE_path[shortest]["Path Distance"] + node_dict[shortest]["Neighbours"][neighbour] < \
                         THE_path[neighbour]["Path Distance"]:
-                    THE_path[neighbour]["Path Distance"] = THE_path[shortest]["Path Distance"] + node_dict[shortest][
-                        neighbour]
+                    THE_path[neighbour]["Path Distance"] = THE_path[shortest]["Path Distance"] + node_dict[shortest]["Neighbours"][neighbour]
+                    step_count += 1
+                    self.textbox.insert(tk.END, f'''{step_count}) The path from {shortest} to {neighbour} is shorter than the original path we had for {neighbour}. This means we change the distance path distance value of {neighbour}
+to {THE_path[neighbour]["Path Distance"]}\n''')
                     THE_path[neighbour]["Combined Distance"] = THE_path[neighbour]["Path Distance"] + \
                                                                THE_path[neighbour]["Heuristic"]
                     THE_path[neighbour]["Previous Node"] = shortest
+
 
             node_dict.pop(shortest)
 
