@@ -1,4 +1,5 @@
 import tkinter as tk
+import time
 
 from Dictionaries import node_dict, THE_path
 
@@ -245,8 +246,6 @@ class AStarAlgorithmFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
         super().__init__(parent, bg="red4")
 
-        print(node_dict)
-
         self.canvas = canvas_frame
 
         self.rowconfigure(0, weight=5)
@@ -277,6 +276,7 @@ class AStarAlgorithmFrame(tk.Frame):
         start = None
         goal = None
         step_count = 0
+        iteration_count = 1
 
         for node in node_dict:
             THE_path[node] = {"Path Distance": float("inf"),
@@ -293,35 +293,52 @@ class AStarAlgorithmFrame(tk.Frame):
         THE_path[start]["Combined Distance"] = 0
         THE_path[start]["Path Distance"] = 0
 
-        step_count += 1
+        self.textbox.insert(tk.END, f"{step_count}) Set the combined distance of {start} to 0.\n")
+        self.after(1000, None)
 
         while node_dict:
+            self.textbox.insert(tk.END, f"Iteration {iteration_count}:\n")
             shortest = None
 
+            step_count += 1
             for node in node_dict:
                 if shortest is None:
                     shortest = node
                 elif THE_path[node]["Combined Distance"] < THE_path[shortest]["Combined Distance"]:
                     shortest = node
 
-            step_count += 1
+            self.textbox.insert(tk.END, f"{step_count}) Found the node with current shortest distance to be {shortest}.\n")
 
+            step_count += 1
             for neighbour, path_cost in node_dict[shortest]["Neighbours"].items():
                 if neighbour == THE_path[shortest]["Previous Node"]:
                     continue
 
-                step_count += 1
                 if neighbour in node_dict and THE_path[shortest]["Path Distance"] + node_dict[shortest]["Neighbours"][
                     neighbour] < \
                         THE_path[neighbour]["Path Distance"]:
+                    self.textbox.insert(tk.END, f'''{step_count}) Found that the path between {shortest} and {neighbour} is quicker than what we originally had for {neighbour}.\n''')
+
                     THE_path[neighbour]["Path Distance"] = THE_path[shortest]["Path Distance"] + \
                                                            node_dict[shortest]["Neighbours"][neighbour]
-                    step_count += 1
                     THE_path[neighbour]["Combined Distance"] = THE_path[neighbour]["Path Distance"] + \
                                                                THE_path[neighbour]["Heuristic"]
                     THE_path[neighbour]["Previous Node"] = shortest
 
+                    step_count += 1
+                    self.textbox.insert(tk.END, f'''{step_count}) Changed the path distance of {neighbour} to {THE_path[shortest]["Path Distance"] + \
+                                                           node_dict[shortest]["Neighbours"][neighbour]}.\n''')
+                    step_count += 1
+                    self.textbox.insert(tk.END, f'''{step_count}) Change the combined distance of {neighbour} to {THE_path[neighbour]["Path Distance"] + \
+                                                               THE_path[neighbour]["Heuristic"]}.\n''')
+                    step_count += 1
+                    self.textbox.insert(tk.END, f'''{step_count}) Set the previous node for {neighbour} to {shortest}.\n''')
+
             node_dict.pop(shortest)
+            iteration_count += 1
+
+        step_count += 1
+        self.textbox.insert(tk.END, f"{step_count}) {goal} has the shortest distance. This means we can now work backwards to find the shortest path.\n")
 
         current_node = goal
         while current_node is not start:
@@ -329,4 +346,8 @@ class AStarAlgorithmFrame(tk.Frame):
             current_node = THE_path[current_node]["Previous Node"]
 
         shortest_path.insert(0, start)
-        print(shortest_path)
+
+        self.textbox.insert(tk.END, "The shortest path is:\n")
+        for i in range(len(shortest_path) - 1):
+            self.textbox.insert(tk.END, f"{shortest_path[i]} -> ")
+        self.textbox.insert(tk.END, f"{shortest_path[len(shortest_path) - 1]}")
