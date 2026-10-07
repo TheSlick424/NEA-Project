@@ -2,9 +2,10 @@ import tkinter as tk
 
 from Dictionaries import node_dict, THE_path
 
+
 class ManualGraphSidebar(tk.Frame):
     def __init__(self, parent, canvas_frame):
-        super().__init__(parent, bg= "red4")
+        super().__init__(parent, bg="red4")
 
         self.canvas = canvas_frame
         self.parent = parent
@@ -19,40 +20,40 @@ class ManualGraphSidebar(tk.Frame):
         self.columnconfigure(1, weight=1)
         self.grid_propagate(False)
 
-        self.label = tk.Label(self, text = "Generate Manual Graph", font= ("Helvetica", 20), bg= "red4", fg= "white")
-        self.label.grid(row= 0, column= 0, columnspan= 2, sticky= "nsew")
+        self.label = tk.Label(self, text="Generate Manual Graph", font=("Helvetica", 20), bg="red4", fg="white")
+        self.label.grid(row=0, column=0, columnspan=2, sticky="nsew")
 
-        self.add_node_button = tk.Button(self, text= "Add Node", font= ("Helvetica", 20), bg= "DarkGreen",
-                                         command= self.add_node)
-        self.add_node_button.grid(row= 1, column= 0)
+        self.add_node_button = tk.Button(self, text="Add Node", font=("Helvetica", 20), bg="DarkGreen",
+                                         command=self.add_node)
+        self.add_node_button.grid(row=1, column=0)
 
-        self.remove_node_button = tk.Button(self, text= "Remove Node", font= ("Helvetica", 20), bg= "DarkRed",
-                                            command= self.remove_node)
-        self.remove_node_button.grid(row= 1, column= 1)
+        self.remove_node_button = tk.Button(self, text="Remove Node", font=("Helvetica", 20), bg="DarkRed",
+                                            command=self.remove_node)
+        self.remove_node_button.grid(row=1, column=1)
 
-        self.add_edge_button = tk.Button(self, text= "Add Edge", font= ("Helvetica", 20), bg= "DarkGreen",
-                                         command= self.add_edge)
-        self.add_edge_button.grid(row= 2, column= 0)
+        self.add_edge_button = tk.Button(self, text="Add Edge", font=("Helvetica", 20), bg="DarkGreen",
+                                         command=self.add_edge)
+        self.add_edge_button.grid(row=2, column=0)
 
-        self.remove_edge_button = tk.Button(self, text= "Remove Edge", font= ("Helvetica", 20), bg= "DarkRed",
-                                            command= self.remove_edge)
-        self.remove_edge_button.grid(row= 2, column= 1)
+        self.remove_edge_button = tk.Button(self, text="Remove Edge", font=("Helvetica", 20), bg="DarkRed",
+                                            command=self.remove_edge)
+        self.remove_edge_button.grid(row=2, column=1)
 
-        self.set_start_node_button = tk.Button(self, text= "Set Start Node", font= ("Helvetica", 20), bg= "gold2",
-                                               command= self.set_start_node)
-        self.set_start_node_button.grid(row= 3, column= 0)
+        self.set_start_node_button = tk.Button(self, text="Set Start Node", font=("Helvetica", 20), bg="gold2",
+                                               command=self.set_start_node)
+        self.set_start_node_button.grid(row=3, column=0)
 
-        self.set_end_node_button = tk.Button(self, text= "Set End Node", font= ("Helvetica", 20), bg = "orange3",
-                                             command= self.set_end_node)
-        self.set_end_node_button.grid(row= 3, column= 1)
+        self.set_end_node_button = tk.Button(self, text="Set End Node", font=("Helvetica", 20), bg="orange3",
+                                             command=self.set_end_node)
+        self.set_end_node_button.grid(row=3, column=1)
 
-        self.listbox = tk.Listbox(self, font= ("Helvetica", 20), selectmode= "multiple")
-        self.listbox.grid(row= 4, column= 0, columnspan= 2, sticky= "nsew",
-                          padx = 50)
+        self.listbox = tk.Listbox(self, font=("Helvetica", 20), selectmode="multiple")
+        self.listbox.grid(row=4, column=0, columnspan=2, sticky="nsew",
+                          padx=50)
 
-        self.run_algorithm_button = tk.Button(self, text= "Finalise Setup", font= ("Helvetica", 20), bg= "purple4",
-                                              command= self.finalise_setup)
-        self.run_algorithm_button.grid(row= 5, column= 0, columnspan= 2)
+        self.run_algorithm_button = tk.Button(self, text="Finalise Setup", font=("Helvetica", 20), bg="purple4",
+                                              command=self.finalise_setup)
+        self.run_algorithm_button.grid(row=5, column=0, columnspan=2)
 
     def add_node(self):
         self.label['text'] = "Click To Add Node"
@@ -66,36 +67,37 @@ class ManualGraphSidebar(tk.Frame):
 
     def add_edge(self):
         self.edge = AddEdgeFrame(self, self.canvas)
-        self.edge.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
+        self.edge.grid(row=1, column=0, rowspan=3, columnspan=2, sticky="nsew")
         self.label['text'] = "Enter Node Numbers"
 
     def remove_node(self):
         self.removing_node = RemoveNodeFrame(self, self.canvas)
-        self.removing_node.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
+        self.removing_node.grid(row=1, column=0, rowspan=3, columnspan=2, sticky="nsew")
         self.label["text"] = "Select 1 Node In List To Remove"
 
     def remove_edge(self):
         self.removing_edge = RemoveEdgeFrame(self, self.canvas)
-        self.removing_edge.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
+        self.removing_edge.grid(row=1, column=0, rowspan=3, columnspan=2, sticky="nsew")
         self.label["text"] = "Select 2 Nodes To Remove Edge"
 
     def set_start_node(self):
         self.setting_start_node = SetStartNodeFrame(self, self.canvas)
-        self.setting_start_node.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
+        self.setting_start_node.grid(row=1, column=0, rowspan=3, columnspan=2, sticky="nsew")
         self.label["text"] = "Select 1 Node To Set As Start"
 
     def set_end_node(self):
         self.setting_end_node = SetEndNodeFrame(self, self.canvas)
-        self.setting_end_node.grid(row= 1, column= 0, rowspan= 3, columnspan= 2, sticky= "nsew")
+        self.setting_end_node.grid(row=1, column=0, rowspan=3, columnspan=2, sticky="nsew")
         self.label["text"] = "Select 1 Node To Set As End"
 
     def finalise_setup(self):
         self.finalising_setup = AStarAlgorithmFrame(self, self.canvas)
-        self.finalising_setup.grid(row= 0, column= 0, rowspan= 6, columnspan= 2, sticky= "nsew")
+        self.finalising_setup.grid(row=0, column=0, rowspan=6, columnspan=2, sticky="nsew")
+
 
 class AddEdgeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
-        super().__init__(parent, bg= "red4")
+        super().__init__(parent, bg="red4")
 
         self.canvas = canvas_frame
 
@@ -106,27 +108,27 @@ class AddEdgeFrame(tk.Frame):
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
 
-        self.label_node1 = tk.Label(self, text= "Node 1:", font= ("Helvetica", 20), bg= "red4")
+        self.label_node1 = tk.Label(self, text="Node 1:", font=("Helvetica", 20), bg="red4")
         self.label_node1.grid(row=0, column=0)
 
-        self.label_node2 = tk.Label(self, text= "Node 2:", font= ("Helvetica", 20), bg= "red4")
+        self.label_node2 = tk.Label(self, text="Node 2:", font=("Helvetica", 20), bg="red4")
         self.label_node2.grid(row=1, column=0)
 
-        self.label_weight = tk.Label(self, text= "Weight:", font= ("Helvetica", 20), bg= "red4")
+        self.label_weight = tk.Label(self, text="Weight:", font=("Helvetica", 20), bg="red4")
         self.label_weight.grid(row=2, column=0)
 
-        self.entry_node1 = tk.Entry(self, font= ("Helvetica", 20))
+        self.entry_node1 = tk.Entry(self, font=("Helvetica", 20))
         self.entry_node1.grid(row=0, column=1)
 
-        self.entry_node2 = tk.Entry(self, font= ("Helvetica", 20))
+        self.entry_node2 = tk.Entry(self, font=("Helvetica", 20))
         self.entry_node2.grid(row=1, column=1)
 
-        self.entry_weight = tk.Entry(self, font= ("Helvetica", 20))
+        self.entry_weight = tk.Entry(self, font=("Helvetica", 20))
         self.entry_weight.grid(row=2, column=1)
 
-        self.add_edge_button = tk.Button(self, text= "Add Edge", font= ("Helvetica", 20), bg= "DarkGreen",
-                                         command = self.add_edge)
-        self.add_edge_button.grid(row=3, column= 0, columnspan= 2)
+        self.add_edge_button = tk.Button(self, text="Add Edge", font=("Helvetica", 20), bg="DarkGreen",
+                                         command=self.add_edge)
+        self.add_edge_button.grid(row=3, column=0, columnspan=2)
 
         self.label = parent.label
 
@@ -137,15 +139,16 @@ class AddEdgeFrame(tk.Frame):
         self.label["text"] = "Generate Manual Graph"
         self.destroy()
 
+
 class RemoveNodeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
-        super().__init__(parent, bg= "red4")
+        super().__init__(parent, bg="red4")
 
         self.canvas = canvas_frame
 
-        self.button = tk.Button(self, text= "Remove Node", font= ("Helvetica", 20), bg = "red4",
-                                command= self.remove_node)
-        self.button.place(relx= 0.5, rely= 0.5, anchor= "center")
+        self.button = tk.Button(self, text="Remove Node", font=("Helvetica", 20), bg="red4",
+                                command=self.remove_node)
+        self.button.place(relx=0.5, rely=0.5, anchor="center")
 
         self.listbox = parent.listbox
         self.label = parent.label
@@ -161,15 +164,16 @@ class RemoveNodeFrame(tk.Frame):
             self.label["text"] = "Generate Manual Graph"
             self.destroy()
 
+
 class RemoveEdgeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
-        super().__init__(parent, bg= "red4")
+        super().__init__(parent, bg="red4")
 
         self.canvas = canvas_frame
 
-        self.button = tk.Button(self, text = "Remove Edge", font= ("Helvetica", 20), bg = "red4",
-                                command= self.remove_edge)
-        self.button.place(relx= 0.5, rely= 0.5, anchor= "center")
+        self.button = tk.Button(self, text="Remove Edge", font=("Helvetica", 20), bg="red4",
+                                command=self.remove_edge)
+        self.button.place(relx=0.5, rely=0.5, anchor="center")
 
         self.listbox = parent.listbox
         self.label = parent.label
@@ -188,15 +192,16 @@ class RemoveEdgeFrame(tk.Frame):
             self.label["text"] = "Generate Manual Graph"
             self.destroy()
 
+
 class SetStartNodeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
-        super().__init__(parent, bg= "red4")
+        super().__init__(parent, bg="red4")
 
         self.canvas = canvas_frame
 
         self.set_start_node_button = tk.Button(self, text="Set Start Node", font=("Helvetica", 20), bg="gold2",
-                                               command= self.set_start_node)
-        self.set_start_node_button.place(relx= 0.5, rely= 0.5, anchor= "center")
+                                               command=self.set_start_node)
+        self.set_start_node_button.place(relx=0.5, rely=0.5, anchor="center")
 
         self.listbox = parent.listbox
         self.label = parent.label
@@ -211,15 +216,16 @@ class SetStartNodeFrame(tk.Frame):
             self.label["text"] = "Generate Manual Graph"
             self.destroy()
 
+
 class SetEndNodeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
-        super().__init__(parent, bg= "red4")
+        super().__init__(parent, bg="red4")
 
         self.canvas = canvas_frame
 
         self.set_end_node_button = tk.Button(self, text="Set End Node", font=("Helvetica", 20), bg="orange3",
-                                             command= self.set_end_node)
-        self.set_end_node_button.place(relx= 0.5, rely= 0.5, anchor= "center")
+                                             command=self.set_end_node)
+        self.set_end_node_button.place(relx=0.5, rely=0.5, anchor="center")
 
         self.listbox = parent.listbox
         self.label = parent.label
@@ -234,34 +240,37 @@ class SetEndNodeFrame(tk.Frame):
             self.label["text"] = "Generate Manual Graph"
             self.destroy()
 
+
 class AStarAlgorithmFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
-        super().__init__(parent, bg= "red4")
+        super().__init__(parent, bg="red4")
+
+        print(node_dict)
 
         self.canvas = canvas_frame
 
-        self.rowconfigure(0, weight = 5)
-        self.rowconfigure(1, weight = 1)
-        self.rowconfigure(2, weight = 1)
-        self.columnconfigure(0, weight = 1)
-        self.columnconfigure(1, weight = 1)
+        self.rowconfigure(0, weight=5)
+        self.rowconfigure(1, weight=1)
+        self.rowconfigure(2, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
         self.grid_propagate(False)
 
-        self.textbox = tk.Text(self, wrap= tk.WORD, font= ("Helvetica", 15))
-        self.textbox.grid(row = 0, column= 0, columnspan= 2, sticky= "nsew")
+        self.textbox = tk.Text(self, wrap=tk.WORD, font=("Helvetica", 15))
+        self.textbox.grid(row=0, column=0, columnspan=2, sticky="nsew")
 
-        self.label = tk.Label(self, text= "Speed:", font= ("Helvetica", 20), bg= "red4", fg= "white")
-        self.label.grid(row= 1, column= 0, sticky= "nsew")
+        self.label = tk.Label(self, text="Speed:", font=("Helvetica", 20), bg="red4", fg="white")
+        self.label.grid(row=1, column=0, sticky="nsew")
 
-        self.speed_slider = tk.Scale(self, from_=1, to= 100, orient= "horizontal", length= 150)
-        self.speed_slider.grid(row= 1, column= 1)
+        self.speed_slider = tk.Scale(self, from_=1, to=100, orient="horizontal", length=150)
+        self.speed_slider.grid(row=1, column=1)
 
-        self.play_pause_button = tk.Button(self, text= "Play/Pause", bg= "red4", font= ("Helvetica", 20))
-        self.play_pause_button.grid(row= 2, column= 0)
+        self.play_pause_button = tk.Button(self, text="Play/Pause", bg="red4", font=("Helvetica", 20))
+        self.play_pause_button.grid(row=2, column=0)
 
-        self.run_algorithm_button = tk.Button(self, text= "Run Algorithm", font= ("Helvetica", 20), bg= "purple4",
-                                              command= self.a_star_algorithm)
-        self.run_algorithm_button.grid(row= 2, column= 1)
+        self.run_algorithm_button = tk.Button(self, text="Run Algorithm", font=("Helvetica", 20), bg="purple4",
+                                              command=self.a_star_algorithm)
+        self.run_algorithm_button.grid(row=2, column=1)
 
     def a_star_algorithm(self):
         shortest_path = []
@@ -280,17 +289,11 @@ class AStarAlgorithmFrame(tk.Frame):
                 goal = node
 
         step_count += 1
-        self.textbox.insert(tk.END, f"{step_count}) Set the path and combined distance of all nodes to infinity.\n")
 
         THE_path[start]["Combined Distance"] = 0
         THE_path[start]["Path Distance"] = 0
 
         step_count += 1
-        self.textbox.insert(tk.END, f"{step_count}) Set the path and combined distance of start node to 0.\n")
-
-        
-        for key in THE_path:
-            self.textbox.insert(tk.END, f"{key} {THE_path[key]["Path Distance"]} {THE_path[key]["Heuristic"]} {THE_path[key]["Combined Distance"]} {THE_path[key]["Previous Node"]}\n")
 
         while node_dict:
             shortest = None
@@ -308,9 +311,11 @@ class AStarAlgorithmFrame(tk.Frame):
                     continue
 
                 step_count += 1
-                if neighbour in node_dict and THE_path[shortest]["Path Distance"] + node_dict[shortest]["Neighbours"][neighbour] < \
+                if neighbour in node_dict and THE_path[shortest]["Path Distance"] + node_dict[shortest]["Neighbours"][
+                    neighbour] < \
                         THE_path[neighbour]["Path Distance"]:
-                    THE_path[neighbour]["Path Distance"] = THE_path[shortest]["Path Distance"] + node_dict[shortest]["Neighbours"][neighbour]
+                    THE_path[neighbour]["Path Distance"] = THE_path[shortest]["Path Distance"] + \
+                                                           node_dict[shortest]["Neighbours"][neighbour]
                     step_count += 1
                     THE_path[neighbour]["Combined Distance"] = THE_path[neighbour]["Path Distance"] + \
                                                                THE_path[neighbour]["Heuristic"]
@@ -324,3 +329,4 @@ class AStarAlgorithmFrame(tk.Frame):
             current_node = THE_path[current_node]["Previous Node"]
 
         shortest_path.insert(0, start)
+        print(shortest_path)
