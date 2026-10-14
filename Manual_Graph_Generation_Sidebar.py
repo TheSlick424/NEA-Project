@@ -314,9 +314,10 @@ class AStarAlgorithmFrame(tk.Frame):
             visuals.append(["New shortest node", shortest])
 
             for neighbour, path_cost in node_dict_copy[shortest]["Neighbours"].items():
-                visuals.append(["Checking path", shortest, neighbour])
                 if neighbour == THE_path[shortest]["Previous Node"]:
                     continue
+
+                visuals.append(["Checking path", shortest, neighbour])
 
                 if neighbour in node_dict_copy and THE_path[shortest]["Path Distance"] + node_dict_copy[shortest]["Neighbours"][
                     neighbour] < \

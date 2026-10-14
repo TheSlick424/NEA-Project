@@ -200,8 +200,8 @@ class CanvasFrame(tk.Frame):
                 self.canvas.create_text(x_coord, y_coord, text=previous_node[5:],
                                         font=("Helvetica", 20), fill="white")
             else:
-                self.canvas.create_oval(x_coord - 25, y_coord - 25, x_coord + 25, y_coord + 25, fill="red4",
-                                        outline="red4")
+                self.canvas.create_oval(x_coord - 25, y_coord - 25, x_coord + 25, y_coord + 25, fill="red",
+                                        outline="red")
                 self.canvas.create_text(x_coord, y_coord, text=previous_node[5:],
                                         font=("Helvetica", 20), fill="black")
 
@@ -217,6 +217,18 @@ class CanvasFrame(tk.Frame):
         y_coord1 = node_dict[node1]["y"]
         x_coord2 = node_dict[node2]["x"]
         y_coord2 = node_dict[node2]["y"]
+
+        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "gold", width = 10)
+        self.canvas.create_oval(x_coord1 - 25, y_coord1 - 25, x_coord1 + 25, y_coord1 + 25, fill= "gold", outline= "gold")
+        self.canvas.create_text(x_coord1, y_coord1, text= node1[5:], font= ("Helvetica", 20), fill= "black")
+
+        if node_dict[node2]["End"]:
+            self.canvas.create_oval(x_coord2 - 25, y_coord2 - 25, x_coord2 + 25, y_coord2 + 25, fill= "black", outline= "black")
+            self.canvas.create_text(x_coord2, y_coord2, text=node2[5:], font= ("Helvetica", 20), fill= "white")
+        else:
+            self.canvas.create_oval(x_coord2 - 25, y_coord2 - 25, x_coord2 + 25, y_coord2 + 25, fill="red",
+                                    outline="red")
+            self.canvas.create_text(x_coord2, y_coord2, text=node2[5:], font=("Helvetica", 20), fill="black")
 
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
