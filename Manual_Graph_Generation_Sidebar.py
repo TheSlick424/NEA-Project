@@ -371,17 +371,19 @@ class AStarAlgorithmFrame(tk.Frame):
         self.speed_slider = tk.Scale(self, from_=1, to=100, orient="horizontal", length=150)
         self.speed_slider.grid(row=1, column=1)
 
-        self.play_pause_button = tk.Button(self, text="Play/Pause", bg="red4", font=("Helvetica", 20))
-        self.play_pause_button.grid(row=2, column=0)
+        self.next_step_button = tk.Button(self, text="Next Step", bg="red4", font=("Helvetica", 20),
+                                          command= self.run_visuals_man)
+        self.next_step_button.grid(row=2, column=0)
+        self.next_step_index = 0
 
         self.run_algorithm_button = tk.Button(self, text="Run Algorithm Auto", font=("Helvetica", 20), bg="purple4",
                                               command= self.run_visuals_auto)
         self.run_algorithm_button.grid(row=2, column=1)
 
     def run_visuals_auto(self):
-        self.run_visuals_automatic(self.explanations, self.visuals)
+        self.run_visuals_automatic(self.explanations, self.visuals, self.next_step_index)
 
-    def run_visuals_automatic(self, explanations, visuals, index = 0):
+    def run_visuals_automatic(self, explanations, visuals, index):
         if index < len(explanations):
             if explanations[index] is not None:
                 self.textbox.insert(tk.END, explanations[index])
@@ -397,4 +399,25 @@ class AStarAlgorithmFrame(tk.Frame):
                 elif visuals[index][0] == "Final path":
                     self.canvas.final_path_visual(visuals[index][1], visuals[index][2])
 
-            self.after(1000, lambda: self.run_visuals_automatic(explanations, visuals, index + 1))
+            self.next_step_index += 1
+            self.after(1000, lambda: self.run_visuals_automatic(explanations, visuals, self.next_step_index))
+
+    def run_visuals_man(self):
+        self.run_visuals_manual(self.explanations, self.visuals, self.next_step_index)
+
+    def run_visuals_manual(self, explanations, visuals, index):
+        if index < len(explanations):
+            if explanations[index] is not None:
+                self.textbox.insert(tk.END, explanations[index])
+                self.textbox.see(tk.END)
+
+            if visuals[index] is not None:
+                if visuals[index][0] == "New shortest node":
+                    self.canvas.new_shortest_node_visual(visuals[index][1])
+                elif visuals[index][0] == "Checking path":
+                    self.canvas.checking_path_visual(visuals[index][1], visuals[index][2])
+                elif visuals[index][0] == "Final path start":
+                    self.canvas.final_path_start_visual(visuals[index][1])
+                elif visuals[index][0] == "Final path":
+                    self.canvas.final_path_visual(visuals[index][1], visuals[index][2])
+            self.next_step_index += 1
