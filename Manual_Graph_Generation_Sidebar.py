@@ -120,8 +120,8 @@ class ManualGraphSidebar(tk.Frame):
         while node_dict_copy:
             explanations.append(f"Iteration {iteration_count}:\n")
             visuals.append(None)
-            shortest = None
 
+            shortest = None
             step_count += 1
             for node in node_dict_copy:
                 if shortest is None:
@@ -169,8 +169,14 @@ class ManualGraphSidebar(tk.Frame):
                     step_count += 1
                     explanations.append(f'''{step_count}) Set the previous node for {neighbour} to {shortest}.\n''')
                     visuals.append(None)
+                step_count += 1
+                explanations.append(f"{step_count}) Finished checking the path between {shortest} and {neighbour}.\n")
+                visuals.append(["Checked path", shortest, neighbour])
 
             node_dict_copy.pop(shortest)
+            step_count += 1
+            explanations.append(f"{step_count}) Finished checking all paths for {shortest}.\n")
+            visuals.append(["Checked shortest node", shortest])
             iteration_count += 1
 
         step_count += 1
@@ -394,6 +400,10 @@ class AStarAlgorithmFrame(tk.Frame):
                     self.canvas.new_shortest_node_visual(visuals[index][1])
                 elif visuals[index][0] == "Checking path":
                     self.canvas.checking_path_visual(visuals[index][1], visuals[index][2])
+                elif visuals[index][0] == "Checked shortest node":
+                    self.canvas.checked_shortest_node_visual(visuals[index][1])
+                elif visuals[index][0] == "Checked path":
+                    self.canvas.checked_path_visual(visuals[index][1], visuals[index][2])
                 elif visuals[index][0] == "Final path start":
                     self.canvas.final_path_start_visual(visuals[index][1])
                 elif visuals[index][0] == "Final path":
@@ -416,6 +426,10 @@ class AStarAlgorithmFrame(tk.Frame):
                     self.canvas.new_shortest_node_visual(visuals[index][1])
                 elif visuals[index][0] == "Checking path":
                     self.canvas.checking_path_visual(visuals[index][1], visuals[index][2])
+                elif visuals[index][0] == "Checked shortest node":
+                    self.canvas.checked_shortest_node_visual(visuals[index][1])
+                elif visuals[index][0] == "Checked path":
+                    self.canvas.checked_path_visual(visuals[index][1], visuals[index][2])
                 elif visuals[index][0] == "Final path start":
                     self.canvas.final_path_start_visual(visuals[index][1])
                 elif visuals[index][0] == "Final path":
