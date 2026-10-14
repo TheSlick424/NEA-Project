@@ -230,6 +230,25 @@ class CanvasFrame(tk.Frame):
                                     outline="red")
             self.canvas.create_text(x_coord2, y_coord2, text=node2[5:], font=("Helvetica", 20), fill="black")
 
+    def final_path_start_visual(self, node):
+        x_coord = node_dict[node]["x"]
+        y_coord = node_dict[node]["y"]
+
+        self.canvas.create_oval(x_coord - 25, y_coord - 25, x_coord + 25, y_coord + 25, fill= "purple4", outline= "purple4")
+        self.canvas.create_text(x_coord, y_coord, text= node[5:], font= ("Helvetica", 20), fill= "black")
+
+    def final_path_visual(self, node1, node2):
+        x_coord1 = node_dict[node1]["x"]
+        y_coord1 = node_dict[node1]["y"]
+        x_coord2 = node_dict[node2]["x"]
+        y_coord2 = node_dict[node2]["y"]
+
+        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "purple4", width = 10)
+        self.canvas.create_oval(x_coord1 - 25, y_coord1 - 25, x_coord1 + 25, y_coord1 + 25, fill= "purple4", outline= "purple4")
+        self.canvas.create_text(x_coord1, y_coord1, text=node1[5:], font= ("Helvetica", 20), fill= "black")
+        self.canvas.create_oval(x_coord2 - 25, y_coord2 - 25, x_coord2 + 25, y_coord2 + 25, fill = "purple4", outline= "purple4")
+        self.canvas.create_text(x_coord2, y_coord2, text=node2[5:], font= ("Helvetica", 20), fill = "black")
+
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
         num = math.ceil(math.sqrt(nodes))

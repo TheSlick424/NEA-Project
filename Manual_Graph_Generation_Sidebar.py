@@ -91,9 +91,114 @@ class ManualGraphSidebar(tk.Frame):
         self.label["text"] = "Select 1 Node To Set As End"
 
     def finalise_setup(self):
-        self.finalising_setup = AStarAlgorithmFrame(self, self.canvas)
-        self.finalising_setup.grid(row=0, column=0, rowspan=6, columnspan=2, sticky="nsew")
+        shortest_path = []
+        explanations = []
+        visuals = []
+        start = None
+        goal = None
+        step_count = 0
+        iteration_count = 1
 
+        for node in node_dict_copy:
+            THE_path[node] = {"Path Distance": float("inf"),
+                              "Heuristic": 0,
+                              "Combined Distance": float("inf"),
+                              "Previous Node": None}
+            if node_dict_copy[node]["Start"]:
+                start = node
+            elif node_dict_copy[node]["End"]:
+                goal = node
+
+        step_count += 1
+
+        THE_path[start]["Combined Distance"] = 0
+        THE_path[start]["Path Distance"] = 0
+
+        explanations.append(f"{step_count}) Set the combined distance of {start} to 0.\n")
+        visuals.append(None)
+
+        while node_dict_copy:
+            explanations.append(f"Iteration {iteration_count}:\n")
+            visuals.append(None)
+            shortest = None
+
+            step_count += 1
+            for node in node_dict_copy:
+                if shortest is None:
+                    shortest = node
+                elif THE_path[node]["Combined Distance"] < THE_path[shortest]["Combined Distance"]:
+                    shortest = node
+
+            explanations.append(f"{step_count}) Found the node with current shortest distance to be {shortest}.\n")
+            visuals.append(["New shortest node", shortest])
+
+            if node_dict[shortest]["End"]:
+                break
+
+            for neighbour, path_cost in node_dict_copy[shortest]["Neighbours"].items():
+                if neighbour == THE_path[shortest]["Previous Node"]:
+                    continue
+
+                step_count += 1
+                explanations.append(f"{step_count}) Checking path between {shortest} and {neighbour}.\n")
+                visuals.append(["Checking path", shortest, neighbour])
+
+                if neighbour in node_dict_copy and THE_path[shortest]["Path Distance"] + \
+                        node_dict_copy[shortest]["Neighbours"][
+                            neighbour] < \
+                        THE_path[neighbour]["Path Distance"]:
+                    step_count += 1
+                    explanations.append(
+                        f"{step_count}) Found that the path between {shortest} and {neighbour} is quicker than what we originally had for {neighbour}.\n")
+                    visuals.append(None)
+
+                    THE_path[neighbour]["Path Distance"] = THE_path[shortest]["Path Distance"] + \
+                                                           node_dict_copy[shortest]["Neighbours"][neighbour]
+                    THE_path[neighbour]["Combined Distance"] = THE_path[neighbour]["Path Distance"] + \
+                                                               THE_path[neighbour]["Heuristic"]
+                    THE_path[neighbour]["Previous Node"] = shortest
+
+                    step_count += 1
+                    explanations.append(
+                        f'''{step_count}) Changed the path distance of {neighbour} to {THE_path[shortest]["Path Distance"] + node_dict_copy[shortest]["Neighbours"][neighbour]}.\n''')
+                    visuals.append(None)
+                    step_count += 1
+                    explanations.append(
+                        f'''{step_count}) Change the combined distance of {neighbour} to {THE_path[neighbour]["Path Distance"] + THE_path[neighbour]["Heuristic"]}.\n''')
+                    visuals.append(None)
+                    step_count += 1
+                    explanations.append(f'''{step_count}) Set the previous node for {neighbour} to {shortest}.\n''')
+                    visuals.append(None)
+
+            node_dict_copy.pop(shortest)
+            iteration_count += 1
+
+        step_count += 1
+        explanations.append(
+            f"{step_count}) {goal} has the shortest distance. This means we can now work backwards to find the shortest path.\n")
+        visuals.append(None)
+
+        current_node = goal
+        while current_node is not start:
+            shortest_path.insert(0, current_node)
+            current_node = THE_path[current_node]["Previous Node"]
+
+        shortest_path.insert(0, start)
+
+        explanations.append("The shortest path is:\n")
+        visuals.append(None)
+        for i in range(len(shortest_path) - 1):
+            explanations.append(f"{shortest_path[i]} -> ")
+
+            if i == 0:
+                visuals.append(["Final path start", shortest_path[i]])
+            else:
+                visuals.append(["Final path", shortest_path[i], shortest_path[i - 1]])
+        explanations.append(f"{shortest_path[len(shortest_path) - 1]}")
+        visuals.append(["Final path", shortest_path[len(shortest_path) - 1], shortest_path[len(shortest_path) - 2]])
+
+        self.finalising_setup = AStarAlgorithmFrame(self, self.canvas, explanations, visuals)
+        self.finalising_setup.grid(row=0, column=0, rowspan=6, columnspan=2, sticky="nsew")
 
 class AddEdgeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
@@ -242,7 +347,7 @@ class SetEndNodeFrame(tk.Frame):
 
 
 class AStarAlgorithmFrame(tk.Frame):
-    def __init__(self, parent, canvas_frame):
+    def __init__(self, parent, canvas_frame, explanations, visuals):
         super().__init__(parent, bg="red4")
 
         self.canvas = canvas_frame
@@ -253,6 +358,9 @@ class AStarAlgorithmFrame(tk.Frame):
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.grid_propagate(False)
+
+        self.explanations = explanations
+        self.visuals = visuals
 
         self.textbox = tk.Text(self, wrap=tk.WORD, font=("Helvetica", 15))
         self.textbox.grid(row=0, column=0, columnspan=2, sticky="nsew")
@@ -266,111 +374,18 @@ class AStarAlgorithmFrame(tk.Frame):
         self.play_pause_button = tk.Button(self, text="Play/Pause", bg="red4", font=("Helvetica", 20))
         self.play_pause_button.grid(row=2, column=0)
 
-        self.run_algorithm_button = tk.Button(self, text="Run Algorithm", font=("Helvetica", 20), bg="purple4",
-                                              command=self.a_star_algorithm)
+        self.run_algorithm_button = tk.Button(self, text="Run Algorithm Auto", font=("Helvetica", 20), bg="purple4",
+                                              command= self.run_visuals_auto)
         self.run_algorithm_button.grid(row=2, column=1)
 
-    def a_star_algorithm(self):
-        shortest_path = []
-        explanations = []
-        visuals = []
-        start = None
-        goal = None
-        step_count = 0
-        iteration_count = 1
+    def run_visuals_auto(self):
+        self.run_visuals_automatic(self.explanations, self.visuals)
 
-        for node in node_dict_copy:
-            THE_path[node] = {"Path Distance": float("inf"),
-                              "Heuristic": 0,
-                              "Combined Distance": float("inf"),
-                              "Previous Node": None}
-            if node_dict_copy[node]["Start"]:
-                start = node
-            elif node_dict_copy[node]["End"]:
-                goal = node
-
-        step_count += 1
-
-        THE_path[start]["Combined Distance"] = 0
-        THE_path[start]["Path Distance"] = 0
-
-        explanations.append(f"{step_count}) Set the combined distance of {start} to 0.\n")
-        visuals.append(None)
-
-        while node_dict_copy:
-            explanations.append(f"Iteration {iteration_count}:\n")
-            visuals.append(None)
-            shortest = None
-
-            step_count += 1
-            for node in node_dict_copy:
-                if shortest is None:
-                    shortest = node
-                elif THE_path[node]["Combined Distance"] < THE_path[shortest]["Combined Distance"]:
-                    shortest = node
-
-
-            explanations.append(f"{step_count}) Found the node with current shortest distance to be {shortest}.\n")
-            visuals.append(["New shortest node", shortest])
-
-            for neighbour, path_cost in node_dict_copy[shortest]["Neighbours"].items():
-                if neighbour == THE_path[shortest]["Previous Node"]:
-                    continue
-
-                visuals.append(["Checking path", shortest, neighbour])
-
-                if neighbour in node_dict_copy and THE_path[shortest]["Path Distance"] + node_dict_copy[shortest]["Neighbours"][
-                    neighbour] < \
-                        THE_path[neighbour]["Path Distance"]:
-                    step_count += 1
-                    explanations.append(f"{step_count}) Found that the path between {shortest} and {neighbour} is quicker than what we originally had for {neighbour}.\n")
-
-                    THE_path[neighbour]["Path Distance"] = THE_path[shortest]["Path Distance"] + \
-                                                           node_dict_copy[shortest]["Neighbours"][neighbour]
-                    THE_path[neighbour]["Combined Distance"] = THE_path[neighbour]["Path Distance"] + \
-                                                               THE_path[neighbour]["Heuristic"]
-                    THE_path[neighbour]["Previous Node"] = shortest
-
-                    step_count += 1
-                    explanations.append(f'''{step_count}) Changed the path distance of {neighbour} to {THE_path[shortest]["Path Distance"] + node_dict_copy[shortest]["Neighbours"][neighbour]}.\n''')
-                    visuals.append(None)
-                    step_count += 1
-                    explanations.append(f'''{step_count}) Change the combined distance of {neighbour} to {THE_path[neighbour]["Path Distance"] + THE_path[neighbour]["Heuristic"]}.\n''')
-                    visuals.append(None)
-                    step_count += 1
-                    explanations.append(f'''{step_count}) Set the previous node for {neighbour} to {shortest}.\n''')
-                    visuals.append(None)
-
-            node_dict_copy.pop(shortest)
-            iteration_count += 1
-
-        step_count += 1
-        explanations.append(f"{step_count}) {goal} has the shortest distance. This means we can now work backwards to find the shortest path.\n")
-        visuals.append(None)
-
-        current_node = goal
-        while current_node is not start:
-            shortest_path.insert(0, current_node)
-            current_node = THE_path[current_node]["Previous Node"]
-
-        shortest_path.insert(0, start)
-
-        explanations.append("The shortest path is:\n")
-        for i in range(len(shortest_path) - 1):
-            explanations.append(f"{shortest_path[i]} -> ")
-
-            if i == 0:
-                visuals.append(["Final path start", shortest_path[i]])
-            else:
-                visuals.append(["Final path", shortest_path[i], shortest_path[i - 1]])
-        explanations.append(f"{shortest_path[len(shortest_path) - 1]}")
-        visuals.append(["Final path", shortest_path[len(shortest_path) - 1], shortest_path[len(shortest_path) - 2]])
-
-        self.run_visuals(explanations, visuals)
-
-    def run_visuals(self, explanations, visuals, index = 0):
+    def run_visuals_automatic(self, explanations, visuals, index = 0):
         if index < len(explanations):
-            self.textbox.insert(tk.END, explanations[index])
+            if explanations[index] is not None:
+                self.textbox.insert(tk.END, explanations[index])
+                self.textbox.see(tk.END)
 
             if visuals[index] is not None:
                 if visuals[index][0] == "New shortest node":
@@ -378,8 +393,8 @@ class AStarAlgorithmFrame(tk.Frame):
                 elif visuals[index][0] == "Checking path":
                     self.canvas.checking_path_visual(visuals[index][1], visuals[index][2])
                 elif visuals[index][0] == "Final path start":
-                    ...
+                    self.canvas.final_path_start_visual(visuals[index][1])
                 elif visuals[index][0] == "Final path":
-                    ...
+                    self.canvas.final_path_visual(visuals[index][1], visuals[index][2])
 
-            self.after(1000, lambda: self.run_visuals(explanations, visuals, index + 1))
+            self.after(1000, lambda: self.run_visuals_automatic(explanations, visuals, index + 1))
