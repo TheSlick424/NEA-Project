@@ -1,7 +1,7 @@
 import tkinter as tk
 from random import randint
 import math
-from Dictionaries import node_dict, node_dict_copy
+from Dictionaries import node_dict, node_dict_copy, THE_path
 
 class CanvasFrame(tk.Frame):
     def __init__(self, parent):
@@ -184,12 +184,39 @@ class CanvasFrame(tk.Frame):
                         node_dict_copy[key]["y"] - node_dict_copy[node]["y"]) ** 2))
 
     def new_shortest_node_visual(self, node):
+        previous_node = THE_path[node]["Previous Node"]
+        if previous_node is not None:
+            x_coord = node_dict[previous_node]["x"]
+            y_coord = node_dict[previous_node]["y"]
+
+            if node_dict[previous_node]["Start"]:
+                self.canvas.create_oval(x_coord - 25, y_coord - 25, x_coord + 25, y_coord + 25, fill= "DarkGreen",
+                                        outline= "DarkGreen")
+                self.canvas.create_text(x_coord, y_coord, text=previous_node[5:],
+                                        font = ("Helvetica", 20), fill= "black")
+            elif node_dict[previous_node]["End"]:
+                self.canvas.create_oval(x_coord - 25, y_coord - 25, x_coord + 25, y_coord + 25, fill= "black",
+                                        outline= "black")
+                self.canvas.create_text(x_coord, y_coord, text=previous_node[5:],
+                                        font=("Helvetica", 20), fill="white")
+            else:
+                self.canvas.create_oval(x_coord - 25, y_coord - 25, x_coord + 25, y_coord + 25, fill="red4",
+                                        outline="red4")
+                self.canvas.create_text(x_coord, y_coord, text=previous_node[5:],
+                                        font=("Helvetica", 20), fill="black")
+
         x_coord = node_dict[node]["x"]
         y_coord = node_dict[node]["y"]
 
         self.canvas.create_oval(x_coord - 25, y_coord - 25, x_coord + 25, y_coord + 25, fill= "gold",
                                 outline= "gold")
         self.canvas.create_text(x_coord, y_coord, text= node[5:], font= ("Helvetica", 20), fill= "black")
+
+    def checking_path_visual(self, node1, node2):
+        x_coord1 = node_dict[node1]["x"]
+        y_coord1 = node_dict[node1]["y"]
+        x_coord2 = node_dict[node2]["x"]
+        y_coord2 = node_dict[node2]["y"]
 
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
