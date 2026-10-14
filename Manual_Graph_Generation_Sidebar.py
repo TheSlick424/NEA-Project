@@ -274,6 +274,7 @@ class AStarAlgorithmFrame(tk.Frame):
     def a_star_algorithm(self):
         shortest_path = []
         explanations = []
+        visuals = []
         start = None
         goal = None
         step_count = 0
@@ -295,9 +296,11 @@ class AStarAlgorithmFrame(tk.Frame):
         THE_path[start]["Path Distance"] = 0
 
         explanations.append(f"{step_count}) Set the combined distance of {start} to 0.\n")
+        visuals.append(None)
 
         while node_dict:
             explanations.append(f"Iteration {iteration_count}:\n")
+            visuals.append(None)
             shortest = None
 
             step_count += 1
@@ -308,8 +311,10 @@ class AStarAlgorithmFrame(tk.Frame):
                     shortest = node
 
             explanations.append(f"{step_count}) Found the node with current shortest distance to be {shortest}.\n")
+            visuals.append(["New shortest node", shortest])
 
             for neighbour, path_cost in node_dict[shortest]["Neighbours"].items():
+                visuals.append(["Checking path", shortest, neighbour])
                 if neighbour == THE_path[shortest]["Previous Node"]:
                     continue
 
@@ -328,17 +333,21 @@ class AStarAlgorithmFrame(tk.Frame):
                     step_count += 1
                     explanations.append(f'''{step_count}) Changed the path distance of {neighbour} to {THE_path[shortest]["Path Distance"] + \
                                                            node_dict[shortest]["Neighbours"][neighbour]}.\n''')
+                    visuals.append(None)
                     step_count += 1
                     explanations.append(f'''{step_count}) Change the combined distance of {neighbour} to {THE_path[neighbour]["Path Distance"] + \
                                                                THE_path[neighbour]["Heuristic"]}.\n''')
+                    visuals.append(None)
                     step_count += 1
                     explanations.append(f'''{step_count}) Set the previous node for {neighbour} to {shortest}.\n''')
+                    visuals.append(None)
 
             node_dict.pop(shortest)
             iteration_count += 1
 
         step_count += 1
         explanations.append(f"{step_count}) {goal} has the shortest distance. This means we can now work backwards to find the shortest path.\n")
+        visuals.append(None)
 
         current_node = goal
         while current_node is not start:
@@ -350,11 +359,20 @@ class AStarAlgorithmFrame(tk.Frame):
         explanations.append("The shortest path is:\n")
         for i in range(len(shortest_path) - 1):
             explanations.append(f"{shortest_path[i]} -> ")
+
+            if i == 0:
+                visuals.append(["Final path start", shortest_path[i]])
+            else:
+                visuals.append(["Final path", shortest_path[i], shortest_path[i - 1]])
         explanations.append(f"{shortest_path[len(shortest_path) - 1]}")
+        visuals.append(["Final path", shortest_path[len(shortest_path) - 1], shortest_path[len(shortest_path) - 2]])
 
-        self.run_visuals(explanations)
+        self.run_visuals(explanations, visuals)
 
-    def run_visuals(self, explanations, index = 0):
+    def run_visuals(self, explanations, visuals, index = 0):
         if index < len(explanations):
             self.textbox.insert(tk.END, explanations[index])
-            self.after(500, lambda: self.run_visuals(explanations, index + 1))
+
+
+
+            self.after(500, lambda: self.run_visuals(explanations, visuals, index + 1))
