@@ -1,7 +1,7 @@
 import tkinter as tk
 from random import randint
 import math
-from Dictionaries import node_dict
+from Dictionaries import node_dict, node_dict_copy
 
 class CanvasFrame(tk.Frame):
     def __init__(self, parent):
@@ -32,6 +32,12 @@ class CanvasFrame(tk.Frame):
                                       "Heuristic": None,
                                       "Neighbours": {}}
 
+        node_dict_copy[f"Node {self.node_count}"] = {"x": (xcoord1 + xcoord2) // 2,
+                                      "y": (ycoord1 + ycoord2) // 2,
+                                      "Start": False,
+                                      "End": False,
+                                      "Heuristic": None,
+                                      "Neighbours": {}}
 
     def remove_node(self, node):
         xcoord = node_dict[node]["x"]
@@ -59,8 +65,10 @@ class CanvasFrame(tk.Frame):
                                             font=("Helvetica", 20))
 
                 del node_dict[key][node]
+                del node_dict_copy[key][node]
 
         node_dict.pop(node)
+        node_dict_copy.pop(node)
 
     def add_edge(self, node1, node2, weight):
         size = 10
@@ -102,6 +110,8 @@ class CanvasFrame(tk.Frame):
 
         node_dict[f"Node {node1}"]["Neighbours"][f"Node {node2}"] = weight
         node_dict[f"Node {node2}"]["Neighbours"][f"Node {node1}"] = weight
+        node_dict_copy[f"Node {node1}"]["Neighbours"][f"Node {node2}"] = weight
+        node_dict_copy[f"Node {node2}"]["Neighbours"][f"Node {node1}"] = weight
 
     def remove_edge(self, nodes):
         node1 = nodes[0]
@@ -144,6 +154,8 @@ class CanvasFrame(tk.Frame):
 
         del node_dict[node1]["Neighbours"][node2]
         del node_dict[node2]["Neighbours"][node1]
+        del node_dict_copy[node1]["Neighbours"][node2]
+        del node_dict_copy[node2]["Neighbours"][node1]
 
     def set_start_node(self, node):
         xcoord = node_dict[node]["x"]
@@ -153,6 +165,7 @@ class CanvasFrame(tk.Frame):
         self.canvas.create_text(xcoord, ycoord, text= node[5:], font = ("Helvetica", 20))
 
         node_dict[node]["Start"] = True
+        node_dict_copy[node]["Start"] = True
 
     def set_end_node(self, node):
         xcoord = node_dict[node]["x"]
@@ -163,9 +176,20 @@ class CanvasFrame(tk.Frame):
         self.canvas.create_text(xcoord, ycoord, text=node[5:], font=("Helvetica", 20), fill= "white")
 
         node_dict[node]["End"] = True
+        node_dict_copy[node]["End"] = True
 
         for key in node_dict:
             node_dict[key]["Heuristic"] = math.ceil(math.sqrt(((node_dict[key]["x"] - node_dict[node]["x"])**2) + (node_dict[key]["y"] - node_dict[node]["y"]) **2))
+            node_dict_copy[key]["Heuristic"] = math.ceil(math.sqrt(((node_dict_copy[key]["x"] - node_dict_copy[node]["x"]) ** 2) + (
+                        node_dict_copy[key]["y"] - node_dict_copy[node]["y"]) ** 2))
+
+    def new_shortest_node_visual(self, node):
+        x_coord = node_dict[node]["x"]
+        y_coord = node_dict[node]["y"]
+
+        self.canvas.create_oval(x_coord - 25, y_coord - 25, x_coord + 25, y_coord + 25, fill= "gold",
+                                outline= "gold")
+        self.canvas.create_text(x_coord, y_coord, text= node[5:], font= ("Helvetica", 20), fill= "black")
 
     def generate_random_graph(self, nodes):
         self.canvas.delete("all")
