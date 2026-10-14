@@ -387,9 +387,10 @@ class AStarAlgorithmFrame(tk.Frame):
         self.run_algorithm_button.grid(row=2, column=1)
 
     def run_visuals_auto(self):
-        self.run_visuals_automatic(self.explanations, self.visuals, self.next_step_index)
+        speed = self.speed_slider.get()
+        self.run_visuals_automatic(self.explanations, self.visuals, self.next_step_index, speed)
 
-    def run_visuals_automatic(self, explanations, visuals, index):
+    def run_visuals_automatic(self, explanations, visuals, index, speed):
         if index < len(explanations):
             if explanations[index] is not None:
                 self.textbox.insert(tk.END, explanations[index])
@@ -410,7 +411,7 @@ class AStarAlgorithmFrame(tk.Frame):
                     self.canvas.final_path_visual(visuals[index][1], visuals[index][2])
 
             self.next_step_index += 1
-            self.after(1000, lambda: self.run_visuals_automatic(explanations, visuals, self.next_step_index))
+            self.after(1000 - (10 * speed), lambda: self.run_visuals_automatic(explanations, visuals, self.next_step_index, speed))
 
     def run_visuals_man(self):
         self.run_visuals_manual(self.explanations, self.visuals, self.next_step_index)
