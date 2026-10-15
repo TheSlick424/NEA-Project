@@ -148,8 +148,7 @@ class ManualGraphSidebar(tk.Frame):
                             neighbour] < \
                         THE_path[neighbour]["Path Distance"]:
                     step_count += 1
-                    explanations.append(
-                        f"{step_count}) Found that the path between {shortest} and {neighbour} is quicker than what we originally had for {neighbour}.\n")
+                    explanations.append(f"{step_count}) Found that the path between {shortest} and {neighbour} is quicker than what we originally had for {neighbour}.\n")
                     visuals.append(None)
 
                     THE_path[neighbour]["Path Distance"] = THE_path[shortest]["Path Distance"] + \

@@ -1,7 +1,7 @@
 import tkinter as tk
-from random import randint
+from random import randint, choice
 import math
-from Dictionaries import node_dict, node_dict_copy, THE_path
+from Dictionaries import node_dict, node_dict_copy
 
 class CanvasFrame(tk.Frame):
     def __init__(self, parent):
@@ -78,7 +78,7 @@ class CanvasFrame(tk.Frame):
         xcoord2 = node_dict[f"Node {node2}"]["x"]
         ycoord2 = node_dict[f"Node {node2}"]["y"]
 
-        self.canvas.create_line(xcoord1, ycoord1, xcoord2, ycoord2, fill = "red", width = size)
+        self.canvas.create_line(xcoord1, ycoord1, xcoord2, ycoord2, fill = "brown4", width = size)
 
         if node_dict[f"Node {node1}"]["Start"]:
             self.canvas.create_oval(xcoord1 - 25, ycoord1 - 25, xcoord1 + 25, ycoord1 + 25, fill = "Dark Green",
@@ -255,6 +255,7 @@ class CanvasFrame(tk.Frame):
         self.canvas.create_text(x_coord2, y_coord2, text=node2[5:], font= ("Helvetica", 20), fill = "black")
 
     def generate_random_graph(self, nodes):
+        node_dict = {}
         self.canvas.delete("all")
         num = math.ceil(math.sqrt(nodes))
         cols = 0
@@ -269,14 +270,13 @@ class CanvasFrame(tk.Frame):
         cell_height = self.canvas.winfo_height() // rows
         cell_width = self.canvas.winfo_width() // cols
 
-        node_count = 0
+        node_size = min(cell_height, cell_width) // 3
 
-        first_node = 0
-        last_node = nodes - 1
+        node_count = 1
 
         for row in range(rows):
             for col in range(cols):
-                if node_count >= nodes:
+                if node_count > nodes:
                     break
 
                 cell_x1 = col * cell_width
@@ -284,15 +284,112 @@ class CanvasFrame(tk.Frame):
                 cell_x2 = cell_x1 + cell_width
                 cell_y2 = cell_y1 + cell_height
 
-                node_size = min(cell_height, cell_width) // 3
-
                 x = randint(cell_x1 + node_size, cell_x2 - node_size)
                 y = randint(cell_y1 + node_size, cell_y2 - node_size)
 
-                if node_count == first_node:
-                    self.canvas.create_oval(x, y, x + node_size, y + node_size, fill = "green", outline= "green")
-                elif node_count == last_node:
-                    self.canvas.create_oval(x, y, x + node_size, y + node_size, fill = "black", outline= "black")
+                if node_count == 1:
+                    self.canvas.create_oval(x - node_size / 2, y - node_size / 2, x + node_size / 2, y + node_size / 2, fill = "green", outline= "green")
+                    self.canvas.create_text(x, y, text= node_count, font= ("Helvetica", math.floor(node_size / 2)), fill= "black")
+                elif node_count == nodes:
+                    self.canvas.create_oval(x - node_size / 2, y - node_size / 2, x + node_size / 2, y + node_size / 2, fill = "black", outline= "black")
+                    self.canvas.create_text(x, y, text=node_count, font=("Helvetica", math.floor(node_size / 2)), fill="white")
                 else:
-                    self.canvas.create_oval(x, y, x + node_size, y + node_size, fill = "red", outline= "red")
+                    self.canvas.create_oval(x - node_size / 2, y - node_size / 2, x + node_size / 2, y + node_size / 2, fill = "red", outline= "red")
+                    self.canvas.create_text(x, y, text=node_count, font=("Helvetica", math.floor(node_size / 2)), fill="black")
+
+                node_dict[f"Node {node_count}"] = {"x": x,
+                                                        "y": y,
+                                                        "row": row,
+                                                        "column": col,
+                                                        "Start": False,
+                                                        "End": False,
+                                                        "Heuristic": None,
+                                                        "Neighbours": {}}
+
+                node_dict_copy[f"Node {node_count}"] = {"x": x,
+                                                             "y": y,
+                                                             "row": row,
+                                                             "column": col,
+                                                             "Start": False,
+                                                             "End": False,
+                                                             "Heuristic": None,
+                                                             "Neighbours": {}}
+
+                if node_count == 1:
+                    node_dict[f"Node {node_count}"]["Start"] = True
+                    node_dict_copy[f"Node {node_count}"]["Start"] = True
+                elif node_count == nodes:
+                    node_dict[f"Node {node_count}"]["End"] = True
+                    node_dict_copy[f"Node {node_count}"]["End"] = True
+
                 node_count += 1
+
+        for node in node_dict:
+            if nodes <= 10:
+                edges = randint(1, 2)
+            elif 11 < nodes < 300:
+                edges = randint(1, 5)
+            else:
+                edges = randint(1, 7)
+
+            close_nodes = [int(node[5:]) - 1, int(node[5:]) + 1, int(node[5:]) + cols, int(node[5:]) - cols, int(node[5:]) + cols - 1,
+                           int(node[5:]) + cols + 1, int(node[5:]) - cols - 1, int(node[5:]) - cols + 1]
+
+            for i in range(edges + 1):
+                connected_node = choice(close_nodes)
+                while int(connected_node) < 1 or int(connected_node) > nodes or connected_node in node_dict[node]["Neighbours"] \
+                        or (node_dict[node]["row"] == node_dict[f"Node {connected_node}"]["row"] and max(int(node[5:]),
+                                                                                                         int(connected_node)) - min(int(node[5:]), int(connected_node)) != 1)\
+                        or (max(int(node_dict[node]["row"]), int(node_dict[f"Node {connected_node}"]["row"])) - min(int(node_dict[node]["row"]),
+                                                                                                                    int(node_dict[f"Node {connected_node}"]["row"])) > 1)\
+                        or (max(int(node_dict[node]["column"]), int(node_dict[f"Node {connected_node}"]["column"])) - min(int(node_dict[node]["column"]),
+                                                                                                                          int(node_dict[f"Node {connected_node}"]["column"])) > 1):
+                    connected_node = choice(close_nodes)
+
+                weight = randint(1, 500)
+
+                node_dict[node]["Neighbours"][f"Node {connected_node}"] = weight
+                node_dict_copy[node]["Neighbours"][f"Node {connected_node}"] = weight
+                node_dict[f"Node {connected_node}"]["Neighbours"][node] = weight
+                node_dict_copy[f"Node {connected_node}"]["Neighbours"][node] = weight
+
+                x_coord1 = node_dict[node]["x"]
+                y_coord1 = node_dict[node]["y"]
+                x_coord2 = node_dict[f"Node {connected_node}"]["x"]
+                y_coord2 = node_dict[f"Node {connected_node}"]["y"]
+
+                self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "brown4", width = node_size / 10)
+
+                if node_dict[node]["Start"]:
+                    self.canvas.create_oval(x_coord1 - node_size / 2, y_coord1 - node_size / 2, x_coord1 + node_size / 2, y_coord1 + node_size / 2,
+                                            fill="DarkGreen", outline="green")
+                    self.canvas.create_text(x_coord1, y_coord1, text=node[5:], font=("Helvetica", math.floor(node_size / 2)),
+                                            fill="black")
+                elif node_dict[node]["End"]:
+                    self.canvas.create_oval(x_coord1 - node_size / 2, y_coord1 - node_size / 2, x_coord1 + node_size / 2, y_coord1 + node_size / 2,
+                                            fill="black", outline="black")
+                    self.canvas.create_text(x_coord1, y_coord1, text=node[5:], font=("Helvetica", math.floor(node_size / 2)),
+                                            fill="white")
+                else:
+                    self.canvas.create_oval(x_coord1 - node_size / 2, y_coord1 - node_size / 2, x_coord1 + node_size / 2, y_coord1 + node_size / 2,
+                                            fill="red", outline="red")
+                    self.canvas.create_text(x_coord1, y_coord1, text=node[5:], font=("Helvetica", math.floor(node_size / 2)),
+                                            fill="black")
+
+                if node_dict[f"Node {connected_node}"]["Start"]:
+                    self.canvas.create_oval(x_coord2 - node_size / 2, y_coord2 - node_size / 2, x_coord2 + node_size / 2, y_coord2 + node_size / 2,
+                                            fill="DarkGreen", outline="green")
+                    self.canvas.create_text(x_coord2, y_coord2, text=connected_node, font=("Helvetica", math.floor(node_size / 2)),
+                                            fill="black")
+                elif node_dict[f"Node {connected_node}"]["End"]:
+                    self.canvas.create_oval(x_coord2 - node_size / 2, y_coord2 - node_size / 2, x_coord2 + node_size / 2, y_coord2 + node_size / 2,
+                                            fill="black", outline="black")
+                    self.canvas.create_text(x_coord2, y_coord2, text=connected_node, font=("Helvetica", math.floor(node_size / 2)),
+                                            fill="white")
+                else:
+                    self.canvas.create_oval(x_coord2 - node_size / 2, y_coord2 - node_size / 2, x_coord2 + node_size / 2, y_coord2 + node_size / 2,
+                                            fill="red", outline="red")
+                    self.canvas.create_text(x_coord2, y_coord2, text=connected_node, font=("Helvetica", math.floor(node_size / 2)),
+                                            fill="black")
+
+        print(node_dict)

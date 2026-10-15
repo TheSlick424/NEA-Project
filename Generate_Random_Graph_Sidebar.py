@@ -13,10 +13,17 @@ class GenerateRandomGraphSidebar(tk.Frame):
         self.entry = tk.Entry(self, bg= "SteelBlue1", font= ("Helvetica", 20))
         self.entry.place(relx= 0.5, rely= 0.4, anchor= "center", height= 100, width= 200)
 
-        self.button = tk.Button(self, text= "Generate Random Graph", bg= "DarkGreen", font= ("Helvetica", 15),
+        self.generate_graph_button = tk.Button(self, text= "Generate Random Graph", bg= "DarkGreen", font= ("Helvetica", 15),
                                 command= self.generate_random_graph)
-        self.button.place(relx= 0.5, rely= 0.7, anchor= "center", height= 100, width= 300)
+        self.generate_graph_button.place(relx= 0.5, rely= 0.6, anchor= "center", height= 100, width= 300)
+
+        self.finalise_setup_button = tk.Button(self, text= "Finalise Setup", bg= "purple4", font= ("Helvetica", 20),
+                                               command= self.finalise_setup)
+        self.finalise_setup_button.place(relx= 0.5, rely= 0.9, anchor= "center", height= 100, width= 300)
 
     def generate_random_graph(self):
         nodes = int(self.entry.get())
         self.canvas.generate_random_graph(nodes)
+
+    def finalise_setup(self):
+        ...
