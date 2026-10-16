@@ -31,14 +31,16 @@ class CanvasFrame(tk.Frame):
                                       "Start": False,
                                       "End": False,
                                       "Heuristic": None,
-                                      "Neighbours": {}}
+                                      "Neighbours": {},
+                                      "Checked": False}
 
         node_dict_copy[f"Node {self.node_count}"] = {"x": (xcoord1 + xcoord2) // 2,
                                       "y": (ycoord1 + ycoord2) // 2,
                                       "Start": False,
                                       "End": False,
                                       "Heuristic": None,
-                                      "Neighbours": {}}
+                                      "Neighbours": {},
+                                      "Checked": False}
 
     def remove_node(self, node):
         xcoord = node_dict[node]["x"]
@@ -278,6 +280,8 @@ class CanvasFrame(tk.Frame):
         self.node_size = min(cell_height, cell_width) // 3
 
         node_count = 1
+        x_end = randint((cols - 1) * cell_width + self.node_size, cols * cell_width - self.node_size)
+        y_end = randint((rows - 1) * cell_height + self.node_size, rows * cell_height - self.node_size)
 
         for row in range(rows):
             for col in range(cols):
@@ -295,39 +299,71 @@ class CanvasFrame(tk.Frame):
                 if node_count == 1:
                     self.canvas.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2, y + self.node_size / 2, fill = "green", outline= "green")
                     self.canvas.create_text(x, y, text= node_count, font= ("Helvetica", math.floor(self.node_size / 2)), fill= "black")
+                    node_dict[f"Node {node_count}"] = {"x": x,
+                                                       "y": y,
+                                                       "row": row,
+                                                       "column": col,
+                                                       "Start": True,
+                                                       "End": False,
+                                                       "Heuristic": math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2),
+                                                       "Neighbours": {},
+                                                       "Checked": False}
+
+                    node_dict_copy[f"Node {node_count}"] = {"x": x,
+                                                            "y": y,
+                                                            "row": row,
+                                                            "column": col,
+                                                            "Start": True,
+                                                            "End": False,
+                                                            "Heuristic": math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2),
+                                                            "Neighbours": {},
+                                                            "Checked": False}
                 elif node_count == nodes:
+                    x = x_end
+                    y = y_end
                     self.canvas.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2, y + self.node_size / 2, fill = "black", outline= "black")
-                    self.canvas.create_text(x, y, text=node_count, font=("Helvetica", math.floor(self.node_size / 2)), fill="white")
+                    self.canvas.create_text(x, y, text= node_count, font= ("Helvetica", math.floor(self.node_size / 2)), fill= "white")
+                    node_dict[f"Node {node_count}"] = {"x": x,
+                                                       "y": y,
+                                                       "row": row,
+                                                       "column": col,
+                                                       "Start": False,
+                                                       "End": True,
+                                                       "Heuristic": 0,
+                                                       "Neighbours": {},
+                                                       "Checked": False}
+
+                    node_dict_copy[f"Node {node_count}"] = {"x": x,
+                                                            "y": y,
+                                                            "row": row,
+                                                            "column": col,
+                                                            "Start": False,
+                                                            "End": True,
+                                                            "Heuristic": 0,
+                                                            "Neighbours": {},
+                                                            "Checked": False}
                 else:
                     self.canvas.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2, y + self.node_size / 2, fill = "red", outline= "red")
                     self.canvas.create_text(x, y, text=node_count, font=("Helvetica", math.floor(self.node_size / 2)), fill="black")
+                    node_dict[f"Node {node_count}"] = {"x": x,
+                                                       "y": y,
+                                                       "row": row,
+                                                       "column": col,
+                                                       "Start": False,
+                                                       "End": False,
+                                                       "Heuristic": math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2),
+                                                       "Neighbours": {},
+                                                       "Checked": False}
 
-                node_dict[f"Node {node_count}"] = {"x": x,
-                                                        "y": y,
-                                                        "row": row,
-                                                        "column": col,
-                                                        "Start": False,
-                                                        "End": False,
-                                                        "Heuristic": None,
-                                                        "Neighbours": {},
-                                                        "Checked": False}
-
-                node_dict_copy[f"Node {node_count}"] = {"x": x,
-                                                             "y": y,
-                                                             "row": row,
-                                                             "column": col,
-                                                             "Start": False,
-                                                             "End": False,
-                                                             "Heuristic": None,
-                                                             "Neighbours": {},
-                                                             "Checked": False}
-
-                if node_count == 1:
-                    node_dict[f"Node {node_count}"]["Start"] = True
-                    node_dict_copy[f"Node {node_count}"]["Start"] = True
-                elif node_count == nodes:
-                    node_dict[f"Node {node_count}"]["End"] = True
-                    node_dict_copy[f"Node {node_count}"]["End"] = True
+                    node_dict_copy[f"Node {node_count}"] = {"x": x,
+                                                            "y": y,
+                                                            "row": row,
+                                                            "column": col,
+                                                            "Start": False,
+                                                            "End": False,
+                                                            "Heuristic": math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2),
+                                                            "Neighbours": {},
+                                                            "Checked": False}
 
                 node_count += 1
 
@@ -398,6 +434,7 @@ class CanvasFrame(tk.Frame):
                                             fill="red", outline="red")
                     self.canvas.create_text(x_coord2, y_coord2, text=connected_node, font=("Helvetica", math.floor(self.node_size / 2)),
                                             fill="black")
+        print(node_dict)
 
     def new_shortest_node_visual_rand(self, node):
         x_coord = node_dict[node]["x"]

@@ -136,7 +136,7 @@ class ManualGraphSidebar(tk.Frame):
                 break
 
             for neighbour, path_cost in node_dict_copy[shortest]["Neighbours"].items():
-                if neighbour == THE_path[shortest]["Previous Node"]:
+                if neighbour == THE_path[shortest]["Previous Node"] or node_dict[neighbour]["Checked"]:
                     continue
 
                 step_count += 1
@@ -176,6 +176,7 @@ class ManualGraphSidebar(tk.Frame):
             step_count += 1
             explanations.append(f"{step_count}) Finished checking all paths for {shortest}.\n")
             visuals.append(["Checked shortest node", shortest])
+            node_dict[shortest]["Checked"] = True
             iteration_count += 1
 
         step_count += 1

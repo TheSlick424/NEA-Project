@@ -211,7 +211,7 @@ class AStarAlgorithmFrame(tk.Frame):
                     self.canvas.final_path_visual_rand(visuals[index][1], visuals[index][2])
 
             self.next_step_index += 1
-            self.after(1000 - (10 * speed), lambda: self.run_visuals_automatic(explanations, visuals, self.next_step_index, speed))
+            self.after(101 - speed, lambda: self.run_visuals_automatic(explanations, visuals, self.next_step_index, speed))
 
     def run_visuals_man(self):
         self.run_visuals_manual(self.explanations, self.visuals, self.next_step_index)
