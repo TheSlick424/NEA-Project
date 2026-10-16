@@ -309,7 +309,8 @@ class CanvasFrame(tk.Frame):
                                                         "Start": False,
                                                         "End": False,
                                                         "Heuristic": None,
-                                                        "Neighbours": {}}
+                                                        "Neighbours": {},
+                                                        "Checked": False}
 
                 node_dict_copy[f"Node {node_count}"] = {"x": x,
                                                              "y": y,
@@ -318,7 +319,8 @@ class CanvasFrame(tk.Frame):
                                                              "Start": False,
                                                              "End": False,
                                                              "Heuristic": None,
-                                                             "Neighbours": {}}
+                                                             "Neighbours": {},
+                                                             "Checked": False}
 
                 if node_count == 1:
                     node_dict[f"Node {node_count}"]["Start"] = True

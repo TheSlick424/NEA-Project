@@ -81,7 +81,7 @@ class GenerateRandomGraphSidebar(tk.Frame):
                 break
 
             for neighbour, path_cost in node_dict_copy[shortest]["Neighbours"].items():
-                if neighbour == THE_path[shortest]["Previous Node"]:
+                if neighbour == THE_path[shortest]["Previous Node"] or node_dict[neighbour]["Checked"]:
                     continue
 
                 step_count += 1
@@ -114,12 +114,10 @@ class GenerateRandomGraphSidebar(tk.Frame):
                     step_count += 1
                     explanations.append(f'''{step_count}) Set the previous node for {neighbour} to {shortest}.\n''')
                     visuals.append(None)
-                del node_dict[shortest]["Neighbours"][neighbour]
-                del node_dict[neighbour]["Neighbours"][shortest]
-
                 step_count += 1
                 explanations.append(f"{step_count}) Finished checking the path between {shortest} and {neighbour}.\n")
                 visuals.append(["Checked path", shortest, neighbour])
+                node_dict[shortest]["Checked"] = True
 
             node_dict_copy.pop(shortest)
             step_count += 1
