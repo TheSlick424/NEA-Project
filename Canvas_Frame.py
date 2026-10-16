@@ -245,7 +245,7 @@ class CanvasFrame(tk.Frame):
         x_coord = node_dict[node]["x"]
         y_coord = node_dict[node]["y"]
 
-        self.canvas.create_oval(x_coord - 25, y_coord - 25, x_coord + 25, y_coord + 25, fill= "purple4", outline= "purple4")
+        self.canvas.create_oval(x_coord - 25, y_coord - 25, x_coord + 25, y_coord + 25, fill= "forest green", outline= "forest green")
         self.canvas.create_text(x_coord, y_coord, text= node[5:], font= ("Helvetica", 20), fill= "black")
 
     def final_path_visual(self, node1, node2):
@@ -254,10 +254,10 @@ class CanvasFrame(tk.Frame):
         x_coord2 = node_dict[node2]["x"]
         y_coord2 = node_dict[node2]["y"]
 
-        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "purple4", width = 10)
-        self.canvas.create_oval(x_coord1 - 25, y_coord1 - 25, x_coord1 + 25, y_coord1 + 25, fill= "purple4", outline= "purple4")
+        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "forest green", width = 10)
+        self.canvas.create_oval(x_coord1 - 25, y_coord1 - 25, x_coord1 + 25, y_coord1 + 25, fill= "forest green", outline= "forest green")
         self.canvas.create_text(x_coord1, y_coord1, text=node1[5:], font= ("Helvetica", 20), fill= "black")
-        self.canvas.create_oval(x_coord2 - 25, y_coord2 - 25, x_coord2 + 25, y_coord2 + 25, fill = "purple4", outline= "purple4")
+        self.canvas.create_oval(x_coord2 - 25, y_coord2 - 25, x_coord2 + 25, y_coord2 + 25, fill = "forest green", outline= "forest green")
         self.canvas.create_text(x_coord2, y_coord2, text=node2[5:], font= ("Helvetica", 20), fill = "black")
 
     def generate_random_graph(self, nodes):
@@ -389,7 +389,8 @@ class CanvasFrame(tk.Frame):
                                                                                                                           int(node_dict[f"Node {connected_node}"]["column"])) > 1):
                     connected_node = choice(close_nodes)
 
-                weight = randint(1, 500)
+                weight = math.ceil(math.sqrt((node_dict[node]["x"] - node_dict[f"Node {connected_node}"]["x"])**2 +
+                                   (node_dict[node]["y"] - node_dict[f"Node {connected_node}"]["y"])**2))
 
                 node_dict[node]["Neighbours"][f"Node {connected_node}"] = weight
                 node_dict_copy[node]["Neighbours"][f"Node {connected_node}"] = weight
@@ -434,7 +435,6 @@ class CanvasFrame(tk.Frame):
                                             fill="red", outline="red")
                     self.canvas.create_text(x_coord2, y_coord2, text=connected_node, font=("Helvetica", math.floor(self.node_size / 2)),
                                             fill="black")
-        print(node_dict)
 
     def new_shortest_node_visual_rand(self, node):
         x_coord = node_dict[node]["x"]
@@ -492,7 +492,7 @@ class CanvasFrame(tk.Frame):
         x_coord = node_dict[node]["x"]
         y_coord = node_dict[node]["y"]
 
-        self.canvas.create_oval(x_coord - self.node_size / 2, y_coord - self.node_size / 2, x_coord + self.node_size / 2, y_coord + self.node_size / 2, fill= "purple4", outline= "purple4")
+        self.canvas.create_oval(x_coord - self.node_size / 2, y_coord - self.node_size / 2, x_coord + self.node_size / 2, y_coord + self.node_size / 2, fill= "forest green", outline= "forest green")
         self.canvas.create_text(x_coord, y_coord, text= node[5:], font= ("Helvetica", math.floor(self.node_size / 2)), fill= "black")
 
     def final_path_visual_rand(self, node1, node2):
@@ -501,8 +501,8 @@ class CanvasFrame(tk.Frame):
         x_coord2 = node_dict[node2]["x"]
         y_coord2 = node_dict[node2]["y"]
 
-        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "purple4", width = self.node_size / 10)
-        self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill= "purple4", outline= "purple4")
+        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "forest green", width = self.node_size / 10)
+        self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill= "forest green", outline= "forest green")
         self.canvas.create_text(x_coord1, y_coord1, text=node1[5:], font= ("Helvetica", math.floor(self.node_size / 2)), fill= "black")
-        self.canvas.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill = "purple4", outline= "purple4")
+        self.canvas.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill = "forest green", outline= "forest green")
         self.canvas.create_text(x_coord2, y_coord2, text=node2[5:], font= ("Helvetica", math.floor(self.node_size / 2)), fill = "black")
