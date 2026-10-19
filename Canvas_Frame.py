@@ -305,7 +305,7 @@ class CanvasFrame(tk.Frame):
                                                        "column": col,
                                                        "Start": True,
                                                        "End": False,
-                                                       "Heuristic": math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2),
+                                                       "Heuristic": ((x_end - x) ** 2 + (y_end - y) ** 2)**30,
                                                        "Neighbours": {},
                                                        "Checked": False}
 
@@ -315,7 +315,7 @@ class CanvasFrame(tk.Frame):
                                                             "column": col,
                                                             "Start": True,
                                                             "End": False,
-                                                            "Heuristic": math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2),
+                                                            "Heuristic": ((x_end - x) ** 2 + (y_end - y) ** 2)**30,
                                                             "Neighbours": {},
                                                             "Checked": False}
                 elif node_count == nodes:
@@ -351,7 +351,7 @@ class CanvasFrame(tk.Frame):
                                                        "column": col,
                                                        "Start": False,
                                                        "End": False,
-                                                       "Heuristic": math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2),
+                                                       "Heuristic": ((x_end - x) ** 2 + (y_end - y) ** 2)**30,
                                                        "Neighbours": {},
                                                        "Checked": False}
 
@@ -361,7 +361,7 @@ class CanvasFrame(tk.Frame):
                                                             "column": col,
                                                             "Start": False,
                                                             "End": False,
-                                                            "Heuristic": math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2),
+                                                            "Heuristic": ((x_end - x) ** 2 + (y_end - y) ** 2)**30,
                                                             "Neighbours": {},
                                                             "Checked": False}
 
@@ -389,8 +389,8 @@ class CanvasFrame(tk.Frame):
                                                                                                                           int(node_dict[f"Node {connected_node}"]["column"])) > 1):
                     connected_node = choice(close_nodes)
 
-                weight = math.ceil(math.sqrt((node_dict[node]["x"] - node_dict[f"Node {connected_node}"]["x"])**2 +
-                                   (node_dict[node]["y"] - node_dict[f"Node {connected_node}"]["y"])**2))
+                weight = math.floor(((node_dict[node]["x"] - node_dict[f"Node {connected_node}"]["x"])**2 +
+                                  (node_dict[node]["y"] - node_dict[f"Node {connected_node}"]["y"])**2)**(1/4))
 
                 node_dict[node]["Neighbours"][f"Node {connected_node}"] = weight
                 node_dict_copy[node]["Neighbours"][f"Node {connected_node}"] = weight

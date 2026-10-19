@@ -88,9 +88,9 @@ class GenerateRandomGraphSidebar(tk.Frame):
                 explanations.append(f"{step_count}) Checking path between {shortest} and {neighbour}.\n")
                 visuals.append(["Checking path", shortest, neighbour])
 
-                if neighbour in node_dict_copy and THE_path[shortest]["Path Distance"] + \
+                if neighbour in node_dict_copy and THE_path[shortest]["Combined Distance"] + \
                         node_dict_copy[shortest]["Neighbours"][
-                            neighbour] < \
+                            neighbour] + node_dict_copy[neighbour]["Heuristic"] < \
                         THE_path[neighbour]["Path Distance"]:
                     step_count += 1
                     explanations.append(

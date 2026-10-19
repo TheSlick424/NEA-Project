@@ -143,12 +143,13 @@ class ManualGraphSidebar(tk.Frame):
                 explanations.append(f"{step_count}) Checking path between {shortest} and {neighbour}.\n")
                 visuals.append(["Checking path", shortest, neighbour])
 
-                if neighbour in node_dict_copy and THE_path[shortest]["Path Distance"] + \
+                if neighbour in node_dict_copy and THE_path[shortest]["Combined Distance"] + \
                         node_dict_copy[shortest]["Neighbours"][
-                            neighbour] < \
+                            neighbour] + node_dict_copy[neighbour]["Heuristic"] < \
                         THE_path[neighbour]["Path Distance"]:
                     step_count += 1
-                    explanations.append(f"{step_count}) Found that the path between {shortest} and {neighbour} is quicker than what we originally had for {neighbour}.\n")
+                    explanations.append(
+                        f"{step_count}) Found that the path between {shortest} and {neighbour} is quicker than what we originally had for {neighbour}.\n")
                     visuals.append(None)
 
                     THE_path[neighbour]["Path Distance"] = THE_path[shortest]["Path Distance"] + \
@@ -171,12 +172,12 @@ class ManualGraphSidebar(tk.Frame):
                 step_count += 1
                 explanations.append(f"{step_count}) Finished checking the path between {shortest} and {neighbour}.\n")
                 visuals.append(["Checked path", shortest, neighbour])
+                node_dict[shortest]["Checked"] = True
 
             node_dict_copy.pop(shortest)
             step_count += 1
             explanations.append(f"{step_count}) Finished checking all paths for {shortest}.\n")
             visuals.append(["Checked shortest node", shortest])
-            node_dict[shortest]["Checked"] = True
             iteration_count += 1
 
         step_count += 1
@@ -204,7 +205,7 @@ class ManualGraphSidebar(tk.Frame):
         visuals.append(["Final path", shortest_path[len(shortest_path) - 1], shortest_path[len(shortest_path) - 2]])
 
         self.finalising_setup = AStarAlgorithmFrame(self, self.canvas, explanations, visuals)
-        self.finalising_setup.grid(row=0, column=0, rowspan=6, columnspan=2, sticky="nsew")
+        self.finalising_setup.grid(row=0, column=0, rowspan=6, columnspan= 2, sticky="nsew")
 
 class AddEdgeFrame(tk.Frame):
     def __init__(self, parent, canvas_frame):
@@ -411,7 +412,7 @@ class AStarAlgorithmFrame(tk.Frame):
                     self.canvas.final_path_visual(visuals[index][1], visuals[index][2])
 
             self.next_step_index += 1
-            self.after(1000 - (10 * speed), lambda: self.run_visuals_automatic(explanations, visuals, self.next_step_index, speed))
+            self.after(101 - speed, lambda: self.run_visuals_automatic(explanations, visuals, self.next_step_index, speed))
 
     def run_visuals_man(self):
         self.run_visuals_manual(self.explanations, self.visuals, self.next_step_index)
