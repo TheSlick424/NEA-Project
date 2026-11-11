@@ -46,7 +46,7 @@ class GenerateRandomGraphSidebar(tk.Frame):
 
         for node in node_dict_copy:
             THE_path[node] = {"Path Distance": float("inf"),
-                              "Heuristic": 0,
+                              "Heuristic": node_dict[node]["Heuristic"],
                               "Combined Distance": float("inf"),
                               "Previous Node": None}
             if node_dict_copy[node]["Start"]:
@@ -88,9 +88,9 @@ class GenerateRandomGraphSidebar(tk.Frame):
                 explanations.append(f"{step_count}) Checking path between {shortest} and {neighbour}.\n")
                 visuals.append(["Checking path", shortest, neighbour])
 
-                if neighbour in node_dict_copy and THE_path[shortest]["Combined Distance"] + \
+                if neighbour in node_dict_copy and THE_path[shortest]["Path Distance"] + \
                         node_dict_copy[shortest]["Neighbours"][
-                            neighbour] + node_dict_copy[neighbour]["Heuristic"] < \
+                            neighbour] < \
                         THE_path[neighbour]["Path Distance"]:
                     step_count += 1
                     explanations.append(
