@@ -101,7 +101,7 @@ class ManualGraphSidebar(tk.Frame):
 
         for node in node_dict_copy:
             THE_path[node] = {"Path Distance": float("inf"),
-                              "Heuristic": 0,
+                              "Heuristic": node_dict[node]["Heuristic"],
                               "Combined Distance": float("inf"),
                               "Previous Node": None}
             if node_dict_copy[node]["Start"]:
