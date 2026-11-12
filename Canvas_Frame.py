@@ -277,11 +277,11 @@ class CanvasFrame(tk.Frame):
         cell_height = self.canvas.winfo_height() // rows
         cell_width = self.canvas.winfo_width() // cols
 
-        self.node_size = min(cell_height, cell_width) // 3
+        self.node_size = math.ceil(min(cell_height, cell_width) // 1.5)
 
         node_count = 1
-        x_end = randint((cols - 1) * cell_width + self.node_size, cols * cell_width - self.node_size)
-        y_end = randint((rows - 1) * cell_height + self.node_size, rows * cell_height - self.node_size)
+        x_end = randint((cols - 1) * cell_width + self.node_size // 2, cols * cell_width - self.node_size // 2)
+        y_end = randint((rows - 1) * cell_height + self.node_size // 2, rows * cell_height - self.node_size // 2)
 
         for row in range(rows):
             for col in range(cols):
@@ -293,8 +293,8 @@ class CanvasFrame(tk.Frame):
                 cell_x2 = cell_x1 + cell_width
                 cell_y2 = cell_y1 + cell_height
 
-                x = randint(cell_x1 + self.node_size, cell_x2 - self.node_size)
-                y = randint(cell_y1 + self.node_size, cell_y2 - self.node_size)
+                x = randint(cell_x1 + self.node_size // 2, cell_x2 - self.node_size // 2)
+                y = randint(cell_y1 + self.node_size // 2, cell_y2 - self.node_size // 2)
 
                 if node_count == 1:
                     self.canvas.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2, y + self.node_size / 2, fill = "green", outline= "green")
@@ -402,7 +402,7 @@ class CanvasFrame(tk.Frame):
                 x_coord2 = node_dict[f"Node {connected_node}"]["x"]
                 y_coord2 = node_dict[f"Node {connected_node}"]["y"]
 
-                self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "brown4", width = self.node_size / 10)
+                self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "red3", width = self.node_size / 5)
 
                 if node_dict[node]["Start"]:
                     self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
@@ -458,7 +458,7 @@ class CanvasFrame(tk.Frame):
         x_coord2 = node_dict[node2]["x"]
         y_coord2 = node_dict[node2]["y"]
 
-        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "gold", width = self.node_size / 10)
+        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "gold", width = self.node_size / 5)
         self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill= "gold", outline= "gold")
         self.canvas.create_text(x_coord1, y_coord1, text= node1[5:], font= ("Helvetica", math.floor(self.node_size / 2)), fill= "black")
 
@@ -476,7 +476,7 @@ class CanvasFrame(tk.Frame):
         x_coord2 = node_dict[node2]["x"]
         y_coord2 = node_dict[node2]["y"]
 
-        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "gray50", width = self.node_size / 10)
+        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "gray50", width = self.node_size / 5)
         self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill= "gold", outline= "gold")
         self.canvas.create_text(x_coord1, y_coord1, text= node1[5:], font= ("Helvetica", math.floor(self.node_size / 2)), fill= "black")
 
@@ -501,7 +501,7 @@ class CanvasFrame(tk.Frame):
         x_coord2 = node_dict[node2]["x"]
         y_coord2 = node_dict[node2]["y"]
 
-        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "forest green", width = self.node_size / 3)
+        self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "forest green", width = self.node_size / 1.5)
         self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill= "forest green", outline= "forest green")
         self.canvas.create_text(x_coord1, y_coord1, text=node1[5:], font= ("Helvetica", math.floor(self.node_size / 2)), fill= "black")
         self.canvas.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill = "forest green", outline= "forest green")
