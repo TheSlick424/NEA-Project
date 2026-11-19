@@ -7,7 +7,7 @@ class CanvasFrame(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.canvas = tk.Canvas(self, bg = "Midnight Blue")
+        self.canvas = tk.Canvas(self, bg = "black")
         self.canvas.pack(fill= "both", expand = True)
 
         self.node_count = 0
@@ -177,8 +177,8 @@ class CanvasFrame(tk.Frame):
         xcoord = node_dict[node]["x"]
         ycoord = node_dict[node]["y"]
 
-        self.canvas.create_oval(xcoord - 25, ycoord - 25, xcoord + 25, ycoord + 25, fill="black",
-                                outline="black")
+        self.canvas.create_oval(xcoord - 25, ycoord - 25, xcoord + 25, ycoord + 25, fill="purple4",
+                                outline="purple4")
         self.canvas.create_text(xcoord, ycoord, text=node[5:], font=("Helvetica", 20), fill= "white")
 
         node_dict[node]["End"] = True
@@ -368,6 +368,51 @@ class CanvasFrame(tk.Frame):
                 node_count += 1
 
         for node in node_dict:
+            if node_dict[node]["Heuristic"] >= (5/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
+                red = 200
+                green = 100
+                blue = 100
+                interpolation = ((node_dict[node]["Heuristic"] - (5/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2))/
+                ((1/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2)))
+                green += (100 - round(interpolation*100))
+            elif (4/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (5/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
+                red = 200
+                green = 200
+                blue = 100
+                interpolation = ((node_dict[node]["Heuristic"] - (4/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+                                 ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+                red -= (100 - round(interpolation*100))
+            elif (3/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (4/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
+                red = 100
+                green = 200
+                blue = 100
+                interpolation = ((node_dict[node]["Heuristic"] - (3/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+                                 ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+                blue += (100 - round(interpolation * 100))
+            elif (2/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (3/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
+                red = 100
+                green = 200
+                blue = 200
+                interpolation = ((node_dict[node]["Heuristic"] - (2/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+                                 ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+                green -= (100 - round(interpolation*100))
+            elif (1/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (2/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
+                red = 100
+                green = 100
+                blue = 200
+                interpolation = ((node_dict[node]["Heuristic"] - (1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+                                 ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+                red += (100 - round(interpolation * 100))
+            else:
+                red = 200
+                green = 100
+                blue = 200
+                interpolation = ((node_dict[node]["Heuristic"]) /
+                                 ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+                blue -= (100 - round(interpolation * 100))
+
+            colour = "#" + str(hex(red).split("x")[-1]) + str(hex(green).split("x")[-1]) + str(hex(blue).split("x")[-1])
+
             if nodes <= 10:
                 edges = randint(1, 2)
             elif 11 < nodes < 300:
@@ -402,7 +447,7 @@ class CanvasFrame(tk.Frame):
                 x_coord2 = node_dict[f"Node {connected_node}"]["x"]
                 y_coord2 = node_dict[f"Node {connected_node}"]["y"]
 
-                self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "red3", width = self.node_size / 8)
+                self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "gray50", width = self.node_size / 20)
 
                 if node_dict[node]["Start"]:
                     self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
@@ -411,12 +456,12 @@ class CanvasFrame(tk.Frame):
                                             fill="black")
                 elif node_dict[node]["End"]:
                     self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
-                                            fill="black", outline="black")
+                                            fill="purple4", outline="purple4")
                     self.canvas.create_text(x_coord1, y_coord1, text=node[5:], font=("Helvetica", math.floor(self.node_size / 2.5)),
                                             fill="white")
                 else:
                     self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
-                                            fill="red", outline="red")
+                                            fill=colour, outline=colour)
                     self.canvas.create_text(x_coord1, y_coord1, text=node[5:], font=("Helvetica", math.floor(self.node_size / 2.5)),
                                             fill="black")
 
@@ -427,12 +472,12 @@ class CanvasFrame(tk.Frame):
                                             fill="black")
                 elif node_dict[f"Node {connected_node}"]["End"]:
                     self.canvas.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
-                                            fill="black", outline="black")
+                                            fill="purple4", outline="purple4")
                     self.canvas.create_text(x_coord2, y_coord2, text=connected_node, font=("Helvetica", math.floor(self.node_size / 2.5)),
                                             fill="white")
                 else:
                     self.canvas.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
-                                            fill="red", outline="red")
+                                            fill=colour, outline=colour)
                     self.canvas.create_text(x_coord2, y_coord2, text=connected_node, font=("Helvetica", math.floor(self.node_size / 2.5)),
                                             fill="black")
 

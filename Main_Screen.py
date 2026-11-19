@@ -8,7 +8,6 @@ class MainScreen(tk.Tk):
         super().__init__()
 
         self.title("A* Algorithm Solver")
-        self.geometry("1500x800")
 
         self.columnconfigure(0, weight=2)
         self.columnconfigure(1, weight=1)
