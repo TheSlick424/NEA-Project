@@ -1,8 +1,9 @@
 import tkinter as tk
 import math
-from Dictionaries import node_dict, THE_path_a_star, THE_path_dijkstra, node_dict_copy, node_dict_a_star, \
+from Dictionaries import THE_path_a_star, THE_path_dijkstra, node_dict_a_star, \
     node_dict_a_star_copy, node_dict_dijkstra, node_dict_dijkstra_copy
 from random import choice, randint
+import time
 
 
 class AStarVsDijkstra(tk.Frame):
@@ -12,6 +13,7 @@ class AStarVsDijkstra(tk.Frame):
         self.rowconfigure(0, weight=6)
         self.rowconfigure(1, weight=1)
         self.rowconfigure(2, weight=1)
+        self.rowconfigure(3, weight= 1)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.grid_propagate(False)
@@ -28,13 +30,19 @@ class AStarVsDijkstra(tk.Frame):
         self.dijkstra_label = tk.Label(self, text="Dijkstra's Algorithm", font=("Helvetica", 20), bg="red4")
         self.dijkstra_label.grid(row=1, column=1)
 
+        self.a_star_time_label = tk.Label(self, text= "", font= ("Helvetica", 20), bg= "red4")
+        self.a_star_time_label.grid(row=2, column= 0)
+
+        self.dijkstra_time_label = tk.Label(self, text= "", font= ("Helvetica", 20), bg= "red4")
+        self.dijkstra_time_label.grid(row=2, column=1)
+
         self.generate_graph_button = tk.Button(self, text="Generate Graphs", bg="DarkGreen", font=("Helvetica", 20),
                                                command=self.generate_graphs)
-        self.generate_graph_button.grid(row=2, column=0)
+        self.generate_graph_button.grid(row=3, column=0)
 
         self.run_simulation_button = tk.Button(self, text="Run Simulation", bg="purple4", font=("Helvetica", 20),
                                                command=self.run_simulation)
-        self.run_simulation_button.grid(row=2, column=1)
+        self.run_simulation_button.grid(row=3, column=1)
 
     def generate_graphs(self):
         node_dict_a_star.clear()
@@ -43,14 +51,14 @@ class AStarVsDijkstra(tk.Frame):
         node_dict_dijkstra_copy.clear()
         self.canvas_a_star.delete("all")
         self.canvas_dijkstra.delete("all")
-        num = math.ceil(math.sqrt(1000))
+        num = math.ceil(math.sqrt(500))
         cols = 0
         rows = 0
 
         for i in range(num, 0, -1):
-            if 1000 % i == 0:
+            if 500 % i == 0:
                 cols = i
-                rows = 1000 // i
+                rows = 500 // i
                 break
 
         cell_height = self.canvas_a_star.winfo_height() // rows
@@ -64,7 +72,7 @@ class AStarVsDijkstra(tk.Frame):
 
         for row in range(rows):
             for col in range(cols):
-                if node_count > 1000:
+                if node_count > 500:
                     break
 
                 cell_x1 = col * cell_width
@@ -128,7 +136,7 @@ class AStarVsDijkstra(tk.Frame):
                                                                      "Heuristic": 0,
                                                                      "Neighbours": {},
                                                                      "Checked": False}
-                elif node_count == 1000:
+                elif node_count == 500:
                     x = x_end
                     y = y_end
                     self.canvas_a_star.create_oval(x - self.node_size / 2, y - self.node_size / 2,
@@ -311,7 +319,7 @@ class AStarVsDijkstra(tk.Frame):
 
             for i in range(edges + 1):
                 connected_node = choice(close_nodes)
-                while int(connected_node) < 1 or int(connected_node) > 1000 or connected_node in node_dict_a_star[node][
+                while int(connected_node) < 1 or int(connected_node) > 500 or connected_node in node_dict_a_star[node][
                     "Neighbours"] \
                         or (node_dict_a_star[node]["row"] == node_dict_a_star[f"Node {connected_node}"]["row"] and max(
                     int(node[5:]),
@@ -603,9 +611,10 @@ class AStarVsDijkstra(tk.Frame):
         visuals_dijkstra.append(["Final path", shortest_path_dijkstra[len(shortest_path_dijkstra) - 1],
                                  shortest_path_dijkstra[len(shortest_path_dijkstra) - 2]])
         self.index = 0
-        self.run_visuals(visuals_a_star, visuals_dijkstra, self.index)
+        self.start_time = round(time.time())
+        self.run_visuals(visuals_a_star, visuals_dijkstra, self.index, self.start_time)
 
-    def run_visuals(self, visuals_a_star, visuals_dijkstra, index):
+    def run_visuals(self, visuals_a_star, visuals_dijkstra, index, start_time):
         if index < len(visuals_a_star):
             if visuals_a_star[index] is not None:
                 if visuals_a_star[index][0] == "New shortest node":
@@ -619,8 +628,9 @@ class AStarVsDijkstra(tk.Frame):
                 elif visuals_a_star[index][0] == "Final path start":
                     self.final_path_start_visual(visuals_a_star[index][1], "A*")
                 elif visuals_a_star[index][0] == "Final path":
-                    self.final_path_visual(visuals_a_star[index][1], visuals_a_star[index][2], "A*")
+                    self.final_path_visual(visuals_a_star[index][1], visuals_a_star[index][2], index, "A*")
                 self.a_star_label["text"] = f"A* Algorithm - {index} steps"
+                self.a_star_time_label["text"] = f"{round(time.time() - start_time)} seconds"
 
         if index < len(visuals_dijkstra):
             if visuals_dijkstra[index] is not None:
@@ -635,11 +645,12 @@ class AStarVsDijkstra(tk.Frame):
                 elif visuals_dijkstra[index][0] == "Final path start":
                     self.final_path_start_visual(visuals_dijkstra[index][1], "Dijkstra")
                 elif visuals_dijkstra[index][0] == "Final path":
-                    self.final_path_visual(visuals_dijkstra[index][1], visuals_dijkstra[index][2], "Dijkstra")
+                    self.final_path_visual(visuals_dijkstra[index][1], visuals_dijkstra[index][2], index, "Dijkstra")
                 self.dijkstra_label["text"] = f"Dijkstra Algorithm - {index} steps"
+                self.dijkstra_time_label["text"] = f"{round(time.time() - start_time)} seconds"
 
         self.index += 1
-        self.after(1, lambda: self.run_visuals(visuals_a_star, visuals_dijkstra, self.index))
+        self.after(1, lambda: self.run_visuals(visuals_a_star, visuals_dijkstra, self.index, start_time))
 
     def new_shortest_node_visual(self, node, canvas):
         if canvas == "A*":
@@ -811,7 +822,7 @@ class AStarVsDijkstra(tk.Frame):
             self.canvas_dijkstra.create_text(x_coord, y_coord, text=node[5:],
                                              font=("Helvetica", math.floor(self.node_size / 2)), fill="black")
 
-    def final_path_visual(self, node1, node2, canvas):
+    def final_path_visual(self, node1, node2, steps, canvas):
         if canvas == "A*":
             x_coord1 = node_dict_a_star[node1]["x"]
             y_coord1 = node_dict_a_star[node1]["y"]
