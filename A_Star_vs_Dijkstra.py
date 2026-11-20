@@ -1,38 +1,40 @@
 import tkinter as tk
 import math
-from Dictionaries import node_dict, THE_path_a_star, THE_path_dijkstra, node_dict_copy, node_dict_a_star, node_dict_a_star_copy, node_dict_dijkstra, node_dict_dijkstra_copy
+from Dictionaries import node_dict, THE_path_a_star, THE_path_dijkstra, node_dict_copy, node_dict_a_star, \
+    node_dict_a_star_copy, node_dict_dijkstra, node_dict_dijkstra_copy
 from random import choice, randint
+
 
 class AStarVsDijkstra(tk.Frame):
     def __init__(self, parent):
-        super().__init__(parent, bg= "red4")
+        super().__init__(parent, bg="red4")
 
-        self.rowconfigure(0, weight= 6)
-        self.rowconfigure(1, weight= 1)
-        self.rowconfigure(2, weight= 1)
-        self.columnconfigure(0, weight= 1)
-        self.columnconfigure(1, weight= 1)
+        self.rowconfigure(0, weight=6)
+        self.rowconfigure(1, weight=1)
+        self.rowconfigure(2, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
         self.grid_propagate(False)
 
-        self.canvas_a_star = tk.Canvas(self, bg= "black")
-        self.canvas_a_star.grid(row= 0, column= 0, sticky= "nsew")
+        self.canvas_a_star = tk.Canvas(self, bg="black")
+        self.canvas_a_star.grid(row=0, column=0, sticky="nsew")
 
-        self.canvas_dijkstra = tk.Canvas(self, bg= "black")
-        self.canvas_dijkstra.grid(row= 0, column= 1, sticky= "nsew")
+        self.canvas_dijkstra = tk.Canvas(self, bg="black")
+        self.canvas_dijkstra.grid(row=0, column=1, sticky="nsew")
 
-        self.a_star_label = tk.Label(self, text= "A* Algorithm", font= ("Helvetica", 20), bg= "red4")
-        self.a_star_label.grid(row= 1, column= 0)
+        self.a_star_label = tk.Label(self, text="A* Algorithm", font=("Helvetica", 20), bg="red4")
+        self.a_star_label.grid(row=1, column=0)
 
-        self.dijkstra_label = tk.Label(self, text= "Dijkstra's Algorithm", font= ("Helvetica", 20), bg= "red4")
-        self.dijkstra_label.grid(row= 1, column= 1)
+        self.dijkstra_label = tk.Label(self, text="Dijkstra's Algorithm", font=("Helvetica", 20), bg="red4")
+        self.dijkstra_label.grid(row=1, column=1)
 
-        self.generate_graph_button = tk.Button(self, text= "Generate Graphs", bg= "DarkGreen", font= ("Helvetica", 20),
-                                               command= self.generate_graphs)
-        self.generate_graph_button.grid(row= 2, column= 0)
-        
-        self.run_simulation_button = tk.Button(self, text= "Run Simulation", bg= "purple4", font= ("Helvetica", 20),
-                                               command= self.run_simulation)
-        self.run_simulation_button.grid(row= 2, column= 1)
+        self.generate_graph_button = tk.Button(self, text="Generate Graphs", bg="DarkGreen", font=("Helvetica", 20),
+                                               command=self.generate_graphs)
+        self.generate_graph_button.grid(row=2, column=0)
+
+        self.run_simulation_button = tk.Button(self, text="Run Simulation", bg="purple4", font=("Helvetica", 20),
+                                               command=self.run_simulation)
+        self.run_simulation_button.grid(row=2, column=1)
 
     def generate_graphs(self):
         node_dict_a_star.clear()
@@ -74,89 +76,74 @@ class AStarVsDijkstra(tk.Frame):
                 y = randint(cell_y1 + self.node_size // 2, cell_y2 - self.node_size // 2)
 
                 if node_count == 1:
-                    self.canvas_a_star.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2,
-                                            y + self.node_size / 2, fill="green", outline="green")
-                    self.canvas_dijkstra.create_oval(x - self.node_size / 2, y - self.node_size / 2,
+                    self.canvas_a_star.create_oval(x - self.node_size / 2, y - self.node_size / 2,
                                                    x + self.node_size / 2,
                                                    y + self.node_size / 2, fill="green", outline="green")
-                    self.canvas_a_star.create_text(x, y, text=node_count, font=("Helvetica", math.floor(self.node_size / 2.5)),
-                                            fill="black")
-                    self.canvas_dijkstra.create_text(x, y, text=node_count,
+                    self.canvas_dijkstra.create_oval(x - self.node_size / 2, y - self.node_size / 2,
+                                                     x + self.node_size / 2,
+                                                     y + self.node_size / 2, fill="green", outline="green")
+                    self.canvas_a_star.create_text(x, y, text=node_count,
                                                    font=("Helvetica", math.floor(self.node_size / 2.5)),
                                                    fill="black")
+                    self.canvas_dijkstra.create_text(x, y, text=node_count,
+                                                     font=("Helvetica", math.floor(self.node_size / 2.5)),
+                                                     fill="black")
                     node_dict_a_star[f"Node {node_count}"] = {"x": x,
-                                                       "y": y,
-                                                       "row": row,
-                                                       "column": col,
-                                                       "Start": True,
-                                                       "End": False,
-                                                       "Heuristic": math.ceil(
-                                                           math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
-                                                       "Neighbours": {},
-                                                       "Checked": False}
-
-                    node_dict_a_star_copy[f"Node {node_count}"] = {"x": x,
-                                                            "y": y,
-                                                            "row": row,
-                                                            "column": col,
-                                                            "Start": True,
-                                                            "End": False,
-                                                            "Heuristic": math.ceil(
-                                                                math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
-                                                            "Neighbours": {},
-                                                            "Checked": False}
-                    node_dict_dijkstra[f"Node {node_count}"] = {"x": x,
                                                               "y": y,
                                                               "row": row,
                                                               "column": col,
                                                               "Start": True,
                                                               "End": False,
-                                                              "Heuristic": 0,
+                                                              "Heuristic": math.ceil(
+                                                                  math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
                                                               "Neighbours": {},
                                                               "Checked": False}
 
-                    node_dict_dijkstra_copy[f"Node {node_count}"] = {"x": x,
+                    node_dict_a_star_copy[f"Node {node_count}"] = {"x": x,
                                                                    "y": y,
                                                                    "row": row,
                                                                    "column": col,
                                                                    "Start": True,
                                                                    "End": False,
-                                                                   "Heuristic": 0,
+                                                                   "Heuristic": math.ceil(
+                                                                       math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
                                                                    "Neighbours": {},
                                                                    "Checked": False}
+                    node_dict_dijkstra[f"Node {node_count}"] = {"x": x,
+                                                                "y": y,
+                                                                "row": row,
+                                                                "column": col,
+                                                                "Start": True,
+                                                                "End": False,
+                                                                "Heuristic": 0,
+                                                                "Neighbours": {},
+                                                                "Checked": False}
+
+                    node_dict_dijkstra_copy[f"Node {node_count}"] = {"x": x,
+                                                                     "y": y,
+                                                                     "row": row,
+                                                                     "column": col,
+                                                                     "Start": True,
+                                                                     "End": False,
+                                                                     "Heuristic": 0,
+                                                                     "Neighbours": {},
+                                                                     "Checked": False}
                 elif node_count == 1000:
                     x = x_end
                     y = y_end
-                    self.canvas_a_star.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2,
-                                            y + self.node_size / 2, fill="black", outline="black")
-                    self.canvas_dijkstra.create_oval(x - self.node_size / 2, y - self.node_size / 2,
+                    self.canvas_a_star.create_oval(x - self.node_size / 2, y - self.node_size / 2,
                                                    x + self.node_size / 2,
                                                    y + self.node_size / 2, fill="black", outline="black")
-                    self.canvas_a_star.create_text(x, y, text=node_count, font=("Helvetica", math.floor(self.node_size / 2.5)),
-                                            fill="white")
-                    self.canvas_dijkstra.create_text(x, y, text=node_count,
+                    self.canvas_dijkstra.create_oval(x - self.node_size / 2, y - self.node_size / 2,
+                                                     x + self.node_size / 2,
+                                                     y + self.node_size / 2, fill="black", outline="black")
+                    self.canvas_a_star.create_text(x, y, text=node_count,
                                                    font=("Helvetica", math.floor(self.node_size / 2.5)),
                                                    fill="white")
+                    self.canvas_dijkstra.create_text(x, y, text=node_count,
+                                                     font=("Helvetica", math.floor(self.node_size / 2.5)),
+                                                     fill="white")
                     node_dict_a_star[f"Node {node_count}"] = {"x": x,
-                                                       "y": y,
-                                                       "row": row,
-                                                       "column": col,
-                                                       "Start": False,
-                                                       "End": True,
-                                                       "Heuristic": 0,
-                                                       "Neighbours": {},
-                                                       "Checked": False}
-
-                    node_dict_a_star_copy[f"Node {node_count}"] = {"x": x,
-                                                            "y": y,
-                                                            "row": row,
-                                                            "column": col,
-                                                            "Start": False,
-                                                            "End": True,
-                                                            "Heuristic": 0,
-                                                            "Neighbours": {},
-                                                            "Checked": False}
-                    node_dict_dijkstra[f"Node {node_count}"] = {"x": x,
                                                               "y": y,
                                                               "row": row,
                                                               "column": col,
@@ -166,7 +153,7 @@ class AStarVsDijkstra(tk.Frame):
                                                               "Neighbours": {},
                                                               "Checked": False}
 
-                    node_dict_dijkstra_copy[f"Node {node_count}"] = {"x": x,
+                    node_dict_a_star_copy[f"Node {node_count}"] = {"x": x,
                                                                    "y": y,
                                                                    "row": row,
                                                                    "column": col,
@@ -175,57 +162,78 @@ class AStarVsDijkstra(tk.Frame):
                                                                    "Heuristic": 0,
                                                                    "Neighbours": {},
                                                                    "Checked": False}
+                    node_dict_dijkstra[f"Node {node_count}"] = {"x": x,
+                                                                "y": y,
+                                                                "row": row,
+                                                                "column": col,
+                                                                "Start": False,
+                                                                "End": True,
+                                                                "Heuristic": 0,
+                                                                "Neighbours": {},
+                                                                "Checked": False}
+
+                    node_dict_dijkstra_copy[f"Node {node_count}"] = {"x": x,
+                                                                     "y": y,
+                                                                     "row": row,
+                                                                     "column": col,
+                                                                     "Start": False,
+                                                                     "End": True,
+                                                                     "Heuristic": 0,
+                                                                     "Neighbours": {},
+                                                                     "Checked": False}
                 else:
-                    self.canvas_a_star.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2,
-                                            y + self.node_size / 2, fill="red", outline="red")
-                    self.canvas_dijkstra.create_oval(x - self.node_size / 2, y - self.node_size / 2,
+                    self.canvas_a_star.create_oval(x - self.node_size / 2, y - self.node_size / 2,
                                                    x + self.node_size / 2,
                                                    y + self.node_size / 2, fill="red", outline="red")
-                    self.canvas_a_star.create_text(x, y, text=node_count, font=("Helvetica", math.floor(self.node_size / 2.5)),
-                                            fill="black")
-                    self.canvas_dijkstra.create_text(x, y, text=node_count,
+                    self.canvas_dijkstra.create_oval(x - self.node_size / 2, y - self.node_size / 2,
+                                                     x + self.node_size / 2,
+                                                     y + self.node_size / 2, fill="red", outline="red")
+                    self.canvas_a_star.create_text(x, y, text=node_count,
                                                    font=("Helvetica", math.floor(self.node_size / 2.5)),
                                                    fill="black")
+                    self.canvas_dijkstra.create_text(x, y, text=node_count,
+                                                     font=("Helvetica", math.floor(self.node_size / 2.5)),
+                                                     fill="black")
                     node_dict_a_star[f"Node {node_count}"] = {"x": x,
-                                                       "y": y,
-                                                       "row": row,
-                                                       "column": col,
-                                                       "Start": False,
-                                                       "End": False,
-                                                       "Heuristic": math.ceil(
-                                                           math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
-                                                       "Neighbours": {},
-                                                       "Checked": False}
-
-                    node_dict_a_star_copy[f"Node {node_count}"] = {"x": x,
-                                                            "y": y,
-                                                            "row": row,
-                                                            "column": col,
-                                                            "Start": False,
-                                                            "End": False,
-                                                            "Heuristic": math.ceil(
-                                                                math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
-                                                            "Neighbours": {},
-                                                            "Checked": False}
-                    node_dict_dijkstra[f"Node {node_count}"] = {"x": x,
                                                               "y": y,
                                                               "row": row,
                                                               "column": col,
                                                               "Start": False,
                                                               "End": False,
-                                                              "Heuristic": 0,
+                                                              "Heuristic": math.ceil(
+                                                                  math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
                                                               "Neighbours": {},
                                                               "Checked": False}
 
-                    node_dict_dijkstra_copy[f"Node {node_count}"] = {"x": x,
+                    node_dict_a_star_copy[f"Node {node_count}"] = {"x": x,
                                                                    "y": y,
                                                                    "row": row,
                                                                    "column": col,
                                                                    "Start": False,
                                                                    "End": False,
-                                                                   "Heuristic": 0,
+                                                                   "Heuristic": math.ceil(
+                                                                       math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
                                                                    "Neighbours": {},
                                                                    "Checked": False}
+                    node_dict_dijkstra[f"Node {node_count}"] = {"x": x,
+                                                                "y": y,
+                                                                "row": row,
+                                                                "column": col,
+                                                                "Start": False,
+                                                                "End": False,
+                                                                "Heuristic": 0,
+                                                                "Neighbours": {},
+                                                                "Checked": False}
+
+                    node_dict_dijkstra_copy[f"Node {node_count}"] = {"x": x,
+                                                                     "y": y,
+                                                                     "row": row,
+                                                                     "column": col,
+                                                                     "Start": False,
+                                                                     "End": False,
+                                                                     "Heuristic": 0,
+                                                                     "Neighbours": {},
+                                                                     "Checked": False}
 
                 node_count += 1
 
@@ -242,7 +250,7 @@ class AStarVsDijkstra(tk.Frame):
                 green += (100 - round(interpolation * 100))
             elif (4 / 6) * math.sqrt(self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2) <= \
                     node_dict_a_star[node]["Heuristic"] < (5 / 6) * math.sqrt(
-                    self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2):
+                self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2):
                 red = 200
                 green = 200
                 blue = 100
@@ -253,7 +261,7 @@ class AStarVsDijkstra(tk.Frame):
                 red -= (100 - round(interpolation * 100))
             elif (3 / 6) * math.sqrt(self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2) <= \
                     node_dict_a_star[node]["Heuristic"] < (4 / 6) * math.sqrt(
-                    self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2):
+                self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2):
                 red = 100
                 green = 200
                 blue = 100
@@ -264,7 +272,7 @@ class AStarVsDijkstra(tk.Frame):
                 blue += (100 - round(interpolation * 100))
             elif (2 / 6) * math.sqrt(self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2) <= \
                     node_dict_a_star[node]["Heuristic"] < (3 / 6) * math.sqrt(
-                    self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2):
+                self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2):
                 red = 100
                 green = 200
                 blue = 200
@@ -275,7 +283,7 @@ class AStarVsDijkstra(tk.Frame):
                 green -= (100 - round(interpolation * 100))
             elif (1 / 6) * math.sqrt(self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2) <= \
                     node_dict_a_star[node]["Heuristic"] < (2 / 6) * math.sqrt(
-                    self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2):
+                self.canvas_a_star.winfo_width() ** 2 + self.canvas_a_star.winfo_height() ** 2):
                 red = 100
                 green = 100
                 blue = 200
@@ -305,20 +313,24 @@ class AStarVsDijkstra(tk.Frame):
                 connected_node = choice(close_nodes)
                 while int(connected_node) < 1 or int(connected_node) > 1000 or connected_node in node_dict_a_star[node][
                     "Neighbours"] \
-                        or (node_dict_a_star[node]["row"] == node_dict_a_star[f"Node {connected_node}"]["row"] and max(int(node[5:]),
-                                                                                                         int(connected_node)) - min(
+                        or (node_dict_a_star[node]["row"] == node_dict_a_star[f"Node {connected_node}"]["row"] and max(
+                    int(node[5:]),
+                    int(connected_node)) - min(
                     int(node[5:]), int(connected_node)) != 1) \
-                        or (max(int(node_dict_a_star[node]["row"]), int(node_dict_a_star[f"Node {connected_node}"]["row"])) - min(
+                        or (max(int(node_dict_a_star[node]["row"]),
+                                int(node_dict_a_star[f"Node {connected_node}"]["row"])) - min(
                     int(node_dict_a_star[node]["row"]),
                     int(node_dict_a_star[f"Node {connected_node}"]["row"])) > 1) \
                         or (
-                        max(int(node_dict_a_star[node]["column"]), int(node_dict_a_star[f"Node {connected_node}"]["column"])) - min(
+                        max(int(node_dict_a_star[node]["column"]),
+                            int(node_dict_a_star[f"Node {connected_node}"]["column"])) - min(
                     int(node_dict_a_star[node]["column"]),
                     int(node_dict_a_star[f"Node {connected_node}"]["column"])) > 1):
                     connected_node = choice(close_nodes)
 
-                weight = math.ceil(math.sqrt((node_dict_a_star[node]["x"] - node_dict_a_star_copy[f"Node {connected_node}"]["x"]) ** 2 +
-                                             (node_dict_a_star[node]["y"] - node_dict_a_star_copy[f"Node {connected_node}"]["y"]) ** 2))
+                weight = math.ceil(math.sqrt(
+                    (node_dict_a_star[node]["x"] - node_dict_a_star_copy[f"Node {connected_node}"]["x"]) ** 2 +
+                    (node_dict_a_star[node]["y"] - node_dict_a_star_copy[f"Node {connected_node}"]["y"]) ** 2))
 
                 node_dict_a_star[node]["Neighbours"][f"Node {connected_node}"] = weight
                 node_dict_a_star_copy[node]["Neighbours"][f"Node {connected_node}"] = weight
@@ -335,90 +347,90 @@ class AStarVsDijkstra(tk.Frame):
                 y_coord2 = node_dict_a_star[f"Node {connected_node}"]["y"]
 
                 self.canvas_a_star.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill="gray50",
-                                        width=self.node_size / 20)
-                self.canvas_dijkstra.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill="gray50",
                                                width=self.node_size / 20)
+                self.canvas_dijkstra.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill="gray50",
+                                                 width=self.node_size / 20)
 
                 if node_dict_a_star[node]["Start"]:
                     self.canvas_a_star.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
-                                            x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
-                                            fill="DarkGreen", outline="green")
-                    self.canvas_dijkstra.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
                                                    x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
                                                    fill="DarkGreen", outline="green")
+                    self.canvas_dijkstra.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
+                                                     x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
+                                                     fill="DarkGreen", outline="green")
                     self.canvas_a_star.create_text(x_coord1, y_coord1, text=node[5:],
-                                            font=("Helvetica", math.floor(self.node_size / 2.5)),
-                                            fill="black")
-                    self.canvas_dijkstra.create_text(x_coord1, y_coord1, text=node[5:],
                                                    font=("Helvetica", math.floor(self.node_size / 2.5)),
                                                    fill="black")
+                    self.canvas_dijkstra.create_text(x_coord1, y_coord1, text=node[5:],
+                                                     font=("Helvetica", math.floor(self.node_size / 2.5)),
+                                                     fill="black")
                 elif node_dict_a_star[node]["End"]:
                     self.canvas_a_star.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
-                                            x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
-                                            fill="purple4", outline="purple4")
-                    self.canvas_dijkstra.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
                                                    x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
                                                    fill="purple4", outline="purple4")
+                    self.canvas_dijkstra.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
+                                                     x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
+                                                     fill="purple4", outline="purple4")
                     self.canvas_a_star.create_text(x_coord1, y_coord1, text=node[5:],
-                                            font=("Helvetica", math.floor(self.node_size / 2.5)),
-                                            fill="white")
-                    self.canvas_dijkstra.create_text(x_coord1, y_coord1, text=node[5:],
                                                    font=("Helvetica", math.floor(self.node_size / 2.5)),
                                                    fill="white")
+                    self.canvas_dijkstra.create_text(x_coord1, y_coord1, text=node[5:],
+                                                     font=("Helvetica", math.floor(self.node_size / 2.5)),
+                                                     fill="white")
                 else:
                     self.canvas_a_star.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
-                                            x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
-                                            fill=colour, outline=colour)
-                    self.canvas_dijkstra.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
                                                    x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
                                                    fill=colour, outline=colour)
+                    self.canvas_dijkstra.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
+                                                     x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
+                                                     fill=colour, outline=colour)
                     self.canvas_a_star.create_text(x_coord1, y_coord1, text=node[5:],
-                                            font=("Helvetica", math.floor(self.node_size / 2.5)),
-                                            fill="black")
-                    self.canvas_dijkstra.create_text(x_coord1, y_coord1, text=node[5:],
                                                    font=("Helvetica", math.floor(self.node_size / 2.5)),
                                                    fill="black")
+                    self.canvas_dijkstra.create_text(x_coord1, y_coord1, text=node[5:],
+                                                     font=("Helvetica", math.floor(self.node_size / 2.5)),
+                                                     fill="black")
 
                 if node_dict_a_star[f"Node {connected_node}"]["Start"]:
                     self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
-                                            x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
-                                            fill="DarkGreen", outline="green")
-                    self.canvas_dijkstra.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
                                                    x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
                                                    fill="DarkGreen", outline="green")
+                    self.canvas_dijkstra.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
+                                                     x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+                                                     fill="DarkGreen", outline="green")
                     self.canvas_a_star.create_text(x_coord2, y_coord2, text=connected_node,
-                                            font=("Helvetica", math.floor(self.node_size / 2.5)),
-                                            fill="black")
-                    self.canvas_dijkstra.create_text(x_coord2, y_coord2, text=connected_node,
                                                    font=("Helvetica", math.floor(self.node_size / 2.5)),
                                                    fill="black")
+                    self.canvas_dijkstra.create_text(x_coord2, y_coord2, text=connected_node,
+                                                     font=("Helvetica", math.floor(self.node_size / 2.5)),
+                                                     fill="black")
                 elif node_dict_a_star[f"Node {connected_node}"]["End"]:
                     self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
-                                            x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
-                                            fill="purple4", outline="purple4")
-                    self.canvas_dijkstra.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
                                                    x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
                                                    fill="purple4", outline="purple4")
+                    self.canvas_dijkstra.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
+                                                     x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+                                                     fill="purple4", outline="purple4")
                     self.canvas_a_star.create_text(x_coord2, y_coord2, text=connected_node,
-                                            font=("Helvetica", math.floor(self.node_size / 2.5)),
-                                            fill="white")
-                    self.canvas_dijkstra.create_text(x_coord2, y_coord2, text=connected_node,
                                                    font=("Helvetica", math.floor(self.node_size / 2.5)),
                                                    fill="white")
+                    self.canvas_dijkstra.create_text(x_coord2, y_coord2, text=connected_node,
+                                                     font=("Helvetica", math.floor(self.node_size / 2.5)),
+                                                     fill="white")
                 else:
                     self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
-                                            x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
-                                            fill=colour, outline=colour)
-                    self.canvas_dijkstra.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
                                                    x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
                                                    fill=colour, outline=colour)
+                    self.canvas_dijkstra.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
+                                                     x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+                                                     fill=colour, outline=colour)
                     self.canvas_a_star.create_text(x_coord2, y_coord2, text=connected_node,
-                                            font=("Helvetica", math.floor(self.node_size / 2.5)),
-                                            fill="black")
-                    self.canvas_dijkstra.create_text(x_coord2, y_coord2, text=connected_node,
                                                    font=("Helvetica", math.floor(self.node_size / 2.5)),
                                                    fill="black")
-    
+                    self.canvas_dijkstra.create_text(x_coord2, y_coord2, text=connected_node,
+                                                     font=("Helvetica", math.floor(self.node_size / 2.5)),
+                                                     fill="black")
+
     def run_simulation(self):
         shortest_path_a_star = []
         visuals_a_star = []
@@ -429,9 +441,9 @@ class AStarVsDijkstra(tk.Frame):
 
         for node in node_dict_a_star_copy:
             THE_path_a_star[node] = {"Path Distance": float("inf"),
-                              "Heuristic": node_dict_a_star[node]["Heuristic"],
-                              "Combined Distance": float("inf"),
-                              "Previous Node": None}
+                                     "Heuristic": node_dict_a_star[node]["Heuristic"],
+                                     "Combined Distance": float("inf"),
+                                     "Previous Node": None}
             if node_dict_a_star_copy[node]["Start"]:
                 start_a_star = node
             elif node_dict_a_star_copy[node]["End"]:
@@ -457,7 +469,8 @@ class AStarVsDijkstra(tk.Frame):
                 break
 
             for neighbour, path_cost in node_dict_a_star_copy[shortest_a_star]["Neighbours"].items():
-                if neighbour == THE_path_a_star[shortest_a_star]["Previous Node"] or node_dict_a_star[neighbour]["Checked"]:
+                if neighbour == THE_path_a_star[shortest_a_star]["Previous Node"] or node_dict_a_star[neighbour][
+                    "Checked"]:
                     continue
 
                 step_count_a_star += 1
@@ -470,9 +483,10 @@ class AStarVsDijkstra(tk.Frame):
                     step_count_a_star += 1
 
                     THE_path_a_star[neighbour]["Path Distance"] = THE_path_a_star[shortest_a_star]["Path Distance"] + \
-                                                           node_dict_a_star_copy[shortest_a_star]["Neighbours"][neighbour]
+                                                                  node_dict_a_star_copy[shortest_a_star]["Neighbours"][
+                                                                      neighbour]
                     THE_path_a_star[neighbour]["Combined Distance"] = THE_path_a_star[neighbour]["Path Distance"] + \
-                                                               THE_path_a_star[neighbour]["Heuristic"]
+                                                                      THE_path_a_star[neighbour]["Heuristic"]
                     THE_path_a_star[neighbour]["Previous Node"] = shortest_a_star
 
                     step_count_a_star += 3
@@ -499,7 +513,8 @@ class AStarVsDijkstra(tk.Frame):
                 visuals_a_star.append(["Final path start", shortest_path_a_star[i]])
             else:
                 visuals_a_star.append(["Final path", shortest_path_a_star[i], shortest_path_a_star[i - 1]])
-        visuals_a_star.append(["Final path", shortest_path_a_star[len(shortest_path_a_star) - 1], shortest_path_a_star[len(shortest_path_a_star) - 2]])
+        visuals_a_star.append(["Final path", shortest_path_a_star[len(shortest_path_a_star) - 1],
+                               shortest_path_a_star[len(shortest_path_a_star) - 2]])
 
         shortest_path_dijkstra = []
         visuals_dijkstra = []
@@ -510,9 +525,9 @@ class AStarVsDijkstra(tk.Frame):
 
         for node in node_dict_dijkstra_copy:
             THE_path_dijkstra[node] = {"Path Distance": float("inf"),
-                                     "Heuristic": node_dict_dijkstra[node]["Heuristic"],
-                                     "Combined Distance": float("inf"),
-                                     "Previous Node": None}
+                                       "Heuristic": node_dict_dijkstra[node]["Heuristic"],
+                                       "Combined Distance": float("inf"),
+                                       "Previous Node": None}
             if node_dict_dijkstra_copy[node]["Start"]:
                 start_dijkstra = node
             elif node_dict_dijkstra_copy[node]["End"]:
@@ -529,7 +544,8 @@ class AStarVsDijkstra(tk.Frame):
             for node in node_dict_dijkstra_copy:
                 if shortest_dijkstra is None:
                     shortest_dijkstra = node
-                elif THE_path_dijkstra[node]["Combined Distance"] < THE_path_dijkstra[shortest_dijkstra]["Combined Distance"]:
+                elif THE_path_dijkstra[node]["Combined Distance"] < THE_path_dijkstra[shortest_dijkstra][
+                    "Combined Distance"]:
                     shortest_dijkstra = node
 
             visuals_dijkstra.append(["New shortest node", shortest_dijkstra])
@@ -551,11 +567,13 @@ class AStarVsDijkstra(tk.Frame):
                         THE_path_dijkstra[neighbour]["Path Distance"]:
                     step_count_dijkstra += 1
 
-                    THE_path_dijkstra[neighbour]["Path Distance"] = THE_path_dijkstra[shortest_dijkstra]["Path Distance"] + \
-                                                                  node_dict_dijkstra_copy[shortest_dijkstra]["Neighbours"][
-                                                                      neighbour]
+                    THE_path_dijkstra[neighbour]["Path Distance"] = THE_path_dijkstra[shortest_dijkstra][
+                                                                        "Path Distance"] + \
+                                                                    node_dict_dijkstra_copy[shortest_dijkstra][
+                                                                        "Neighbours"][
+                                                                        neighbour]
                     THE_path_dijkstra[neighbour]["Combined Distance"] = THE_path_dijkstra[neighbour]["Path Distance"] + \
-                                                                      THE_path_dijkstra[neighbour]["Heuristic"]
+                                                                        THE_path_dijkstra[neighbour]["Heuristic"]
                     THE_path_dijkstra[neighbour]["Previous Node"] = shortest_dijkstra
 
                     step_count_dijkstra += 3
@@ -583,10 +601,10 @@ class AStarVsDijkstra(tk.Frame):
             else:
                 visuals_dijkstra.append(["Final path", shortest_path_dijkstra[i], shortest_path_dijkstra[i - 1]])
         visuals_dijkstra.append(["Final path", shortest_path_dijkstra[len(shortest_path_dijkstra) - 1],
-                               shortest_path_dijkstra[len(shortest_path_dijkstra) - 2]])
+                                 shortest_path_dijkstra[len(shortest_path_dijkstra) - 2]])
         self.index = 0
         self.run_visuals(visuals_a_star, visuals_dijkstra, self.index)
-    
+
     def run_visuals(self, visuals_a_star, visuals_dijkstra, index):
         if index < len(visuals_a_star):
             if visuals_a_star[index] is not None:
@@ -602,7 +620,8 @@ class AStarVsDijkstra(tk.Frame):
                     self.final_path_start_visual(visuals_a_star[index][1], "A*")
                 elif visuals_a_star[index][0] == "Final path":
                     self.final_path_visual(visuals_a_star[index][1], visuals_a_star[index][2], "A*")
-        
+                self.a_star_label["text"] = f"A* Algorithm - {index} steps"
+
         if index < len(visuals_dijkstra):
             if visuals_dijkstra[index] is not None:
                 if visuals_dijkstra[index][0] == "New shortest node":
@@ -617,45 +636,50 @@ class AStarVsDijkstra(tk.Frame):
                     self.final_path_start_visual(visuals_dijkstra[index][1], "Dijkstra")
                 elif visuals_dijkstra[index][0] == "Final path":
                     self.final_path_visual(visuals_dijkstra[index][1], visuals_dijkstra[index][2], "Dijkstra")
+                self.dijkstra_label["text"] = f"Dijkstra Algorithm - {index} steps"
 
         self.index += 1
         self.after(1, lambda: self.run_visuals(visuals_a_star, visuals_dijkstra, self.index))
-            
+
     def new_shortest_node_visual(self, node, canvas):
         if canvas == "A*":
             x_coord = node_dict_a_star[node]["x"]
             y_coord = node_dict_a_star[node]["y"]
-    
-            self.canvas_a_star.create_oval(x_coord - self.node_size / 2, y_coord - self.node_size / 2, x_coord + self.node_size / 2, y_coord + self.node_size / 2, fill= "gold",
-                                    outline= "gold")
-            self.canvas_a_star.create_text(x_coord, y_coord, text= node[5:], font= ("Helvetica", math.floor(self.node_size / 2.5)), fill= "black")
+
+            self.canvas_a_star.create_oval(x_coord - self.node_size / 2, y_coord - self.node_size / 2,
+                                           x_coord + self.node_size / 2, y_coord + self.node_size / 2, fill="gold",
+                                           outline="gold")
+            self.canvas_a_star.create_text(x_coord, y_coord, text=node[5:],
+                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
         else:
             x_coord = node_dict_dijkstra[node]["x"]
             y_coord = node_dict_dijkstra[node]["y"]
 
             self.canvas_dijkstra.create_oval(x_coord - self.node_size / 2, y_coord - self.node_size / 2,
-                                           x_coord + self.node_size / 2, y_coord + self.node_size / 2, fill="gold",
-                                           outline="gold")
+                                             x_coord + self.node_size / 2, y_coord + self.node_size / 2, fill="gold",
+                                             outline="gold")
             self.canvas_dijkstra.create_text(x_coord, y_coord, text=node[5:],
-                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+                                             font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
 
     def checked_shortest_node_visual(self, node, canvas):
         if canvas == "A*":
             x_coord = node_dict_a_star[node]["x"]
             y_coord = node_dict_a_star[node]["y"]
-    
-            self.canvas_a_star.create_oval(x_coord - self.node_size / 2, y_coord - self.node_size / 2, x_coord + self.node_size / 2, y_coord + self.node_size / 2, fill= "gray50",
-                                    outline= "gray50")
-            self.canvas_a_star.create_text(x_coord, y_coord, text= node[5:], font= ("Helvetica", math.floor(self.node_size / 2.5)), fill= "black")
+
+            self.canvas_a_star.create_oval(x_coord - self.node_size / 2, y_coord - self.node_size / 2,
+                                           x_coord + self.node_size / 2, y_coord + self.node_size / 2, fill="gray50",
+                                           outline="gray50")
+            self.canvas_a_star.create_text(x_coord, y_coord, text=node[5:],
+                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
         else:
             x_coord = node_dict_dijkstra[node]["x"]
             y_coord = node_dict_dijkstra[node]["y"]
 
             self.canvas_dijkstra.create_oval(x_coord - self.node_size / 2, y_coord - self.node_size / 2,
-                                           x_coord + self.node_size / 2, y_coord + self.node_size / 2, fill="gray50",
-                                           outline="gray50")
+                                             x_coord + self.node_size / 2, y_coord + self.node_size / 2, fill="gray50",
+                                             outline="gray50")
             self.canvas_dijkstra.create_text(x_coord, y_coord, text=node[5:],
-                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+                                             font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
 
     def checking_path_visual(self, node1, node2, canvas):
         if canvas == "A*":
@@ -663,18 +687,27 @@ class AStarVsDijkstra(tk.Frame):
             y_coord1 = node_dict_a_star[node1]["y"]
             x_coord2 = node_dict_a_star[node2]["x"]
             y_coord2 = node_dict_a_star[node2]["y"]
-    
-            self.canvas_a_star.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "gold", width = self.node_size / 8)
-            self.canvas_a_star.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill= "gold", outline= "gold")
-            self.canvas_a_star.create_text(x_coord1, y_coord1, text= node1[5:], font= ("Helvetica", math.floor(self.node_size / 2.5)), fill= "black")
-    
+
+            self.canvas_a_star.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill="gold",
+                                           width=self.node_size / 8)
+            self.canvas_a_star.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
+                                           x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill="gold",
+                                           outline="gold")
+            self.canvas_a_star.create_text(x_coord1, y_coord1, text=node1[5:],
+                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+
             if node_dict_a_star[node2]["End"]:
-                self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill= "black", outline= "black")
-                self.canvas_a_star.create_text(x_coord2, y_coord2, text=node2[5:], font= ("Helvetica", math.floor(self.node_size / 2.5)), fill= "white")
+                self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
+                                               x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+                                               fill="black", outline="black")
+                self.canvas_a_star.create_text(x_coord2, y_coord2, text=node2[5:],
+                                               font=("Helvetica", math.floor(self.node_size / 2.5)), fill="white")
             else:
-                self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill="red",
-                                        outline="red")
-                self.canvas_a_star.create_text(x_coord2, y_coord2, text=node2[5:], font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+                self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
+                                               x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill="red",
+                                               outline="red")
+                self.canvas_a_star.create_text(x_coord2, y_coord2, text=node2[5:],
+                                               font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
         else:
             x_coord1 = node_dict_dijkstra[node1]["x"]
             y_coord1 = node_dict_dijkstra[node1]["y"]
@@ -682,26 +715,26 @@ class AStarVsDijkstra(tk.Frame):
             y_coord2 = node_dict_dijkstra[node2]["y"]
 
             self.canvas_dijkstra.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill="gold",
-                                           width=self.node_size / 8)
+                                             width=self.node_size / 8)
             self.canvas_dijkstra.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
-                                           x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill="gold",
-                                           outline="gold")
+                                             x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill="gold",
+                                             outline="gold")
             self.canvas_dijkstra.create_text(x_coord1, y_coord1, text=node1[5:],
-                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+                                             font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
 
             if node_dict_dijkstra[node2]["End"]:
                 self.canvas_dijkstra.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
-                                               x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
-                                               fill="black", outline="black")
+                                                 x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+                                                 fill="black", outline="black")
                 self.canvas_dijkstra.create_text(x_coord2, y_coord2, text=node2[5:],
-                                               font=("Helvetica", math.floor(self.node_size / 2.5)), fill="white")
+                                                 font=("Helvetica", math.floor(self.node_size / 2.5)), fill="white")
             else:
                 self.canvas_dijkstra.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
-                                               x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill="red",
-                                               outline="red")
+                                                 x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+                                                 fill="red",
+                                                 outline="red")
                 self.canvas_dijkstra.create_text(x_coord2, y_coord2, text=node2[5:],
-                                               font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
-            
+                                                 font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
 
     def checked_path_visual(self, node1, node2, canvas):
         if canvas == "A*":
@@ -709,18 +742,27 @@ class AStarVsDijkstra(tk.Frame):
             y_coord1 = node_dict_a_star[node1]["y"]
             x_coord2 = node_dict_a_star[node2]["x"]
             y_coord2 = node_dict_a_star[node2]["y"]
-    
-            self.canvas_a_star.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "gray50", width = self.node_size / 8)
-            self.canvas_a_star.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill= "gold", outline= "gold")
-            self.canvas_a_star.create_text(x_coord1, y_coord1, text= node1[5:], font= ("Helvetica", math.floor(self.node_size / 2.5)), fill= "black")
-    
+
+            self.canvas_a_star.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill="gray50",
+                                           width=self.node_size / 8)
+            self.canvas_a_star.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
+                                           x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill="gold",
+                                           outline="gold")
+            self.canvas_a_star.create_text(x_coord1, y_coord1, text=node1[5:],
+                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+
             if node_dict_a_star[node2]["End"]:
-                self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill= "black", outline= "black")
-                self.canvas_a_star.create_text(x_coord2, y_coord2, text=node2[5:], font= ("Helvetica", math.floor(self.node_size / 2.5)), fill= "white")
+                self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
+                                               x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+                                               fill="black", outline="black")
+                self.canvas_a_star.create_text(x_coord2, y_coord2, text=node2[5:],
+                                               font=("Helvetica", math.floor(self.node_size / 2.5)), fill="white")
             else:
-                self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill="red",
-                                        outline="red")
-                self.canvas_a_star.create_text(x_coord2, y_coord2, text=node2[5:], font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+                self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
+                                               x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill="red",
+                                               outline="red")
+                self.canvas_a_star.create_text(x_coord2, y_coord2, text=node2[5:],
+                                               font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
         else:
             x_coord1 = node_dict_dijkstra[node1]["x"]
             y_coord1 = node_dict_dijkstra[node1]["y"]
@@ -728,42 +770,46 @@ class AStarVsDijkstra(tk.Frame):
             y_coord2 = node_dict_dijkstra[node2]["y"]
 
             self.canvas_dijkstra.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill="gray50",
-                                           width=self.node_size / 8)
+                                             width=self.node_size / 8)
             self.canvas_dijkstra.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
-                                           x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill="gold",
-                                           outline="gold")
+                                             x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill="gold",
+                                             outline="gold")
             self.canvas_dijkstra.create_text(x_coord1, y_coord1, text=node1[5:],
-                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+                                             font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
 
             if node_dict_dijkstra[node2]["End"]:
                 self.canvas_dijkstra.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
-                                               x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
-                                               fill="black", outline="black")
+                                                 x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+                                                 fill="black", outline="black")
                 self.canvas_dijkstra.create_text(x_coord2, y_coord2, text=node2[5:],
-                                               font=("Helvetica", math.floor(self.node_size / 2.5)), fill="white")
+                                                 font=("Helvetica", math.floor(self.node_size / 2.5)), fill="white")
             else:
                 self.canvas_dijkstra.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
-                                               x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill="red",
-                                               outline="red")
+                                                 x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+                                                 fill="red",
+                                                 outline="red")
                 self.canvas_dijkstra.create_text(x_coord2, y_coord2, text=node2[5:],
-                                               font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+                                                 font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
 
     def final_path_start_visual(self, node, canvas):
         if canvas == "A*":
             x_coord = node_dict_a_star[node]["x"]
             y_coord = node_dict_a_star[node]["y"]
 
-            self.canvas_a_star.create_oval(x_coord - self.node_size / 2, y_coord - self.node_size / 2, x_coord + self.node_size / 2, y_coord + self.node_size / 2, fill= "forest green", outline= "forest green")
-            self.canvas_a_star.create_text(x_coord, y_coord, text= node[5:], font= ("Helvetica", math.floor(self.node_size / 2)), fill= "black")
+            self.canvas_a_star.create_oval(x_coord - self.node_size / 2, y_coord - self.node_size / 2,
+                                           x_coord + self.node_size / 2, y_coord + self.node_size / 2,
+                                           fill="forest green", outline="forest green")
+            self.canvas_a_star.create_text(x_coord, y_coord, text=node[5:],
+                                           font=("Helvetica", math.floor(self.node_size / 2)), fill="black")
         else:
             x_coord = node_dict_dijkstra[node]["x"]
             y_coord = node_dict_dijkstra[node]["y"]
 
             self.canvas_dijkstra.create_oval(x_coord - self.node_size / 2, y_coord - self.node_size / 2,
-                                           x_coord + self.node_size / 2, y_coord + self.node_size / 2,
-                                           fill="forest green", outline="forest green")
+                                             x_coord + self.node_size / 2, y_coord + self.node_size / 2,
+                                             fill="forest green", outline="forest green")
             self.canvas_dijkstra.create_text(x_coord, y_coord, text=node[5:],
-                                           font=("Helvetica", math.floor(self.node_size / 2)), fill="black")
+                                             font=("Helvetica", math.floor(self.node_size / 2)), fill="black")
 
     def final_path_visual(self, node1, node2, canvas):
         if canvas == "A*":
@@ -772,11 +818,18 @@ class AStarVsDijkstra(tk.Frame):
             x_coord2 = node_dict_a_star[node2]["x"]
             y_coord2 = node_dict_a_star[node2]["y"]
 
-            self.canvas_a_star.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "forest green", width = self.node_size / 2)
-            self.canvas_a_star.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2, fill= "forest green", outline= "forest green")
-            self.canvas_a_star.create_text(x_coord1, y_coord1, text=node1[5:], font= ("Helvetica", math.floor(self.node_size / 2.5)), fill= "black")
-            self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2, fill = "forest green", outline= "forest green")
-            self.canvas_a_star.create_text(x_coord2, y_coord2, text=node2[5:], font= ("Helvetica", math.floor(self.node_size / 2.5)), fill = "black")
+            self.canvas_a_star.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill="forest green",
+                                           width=self.node_size / 2)
+            self.canvas_a_star.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
+                                           x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
+                                           fill="forest green", outline="forest green")
+            self.canvas_a_star.create_text(x_coord1, y_coord1, text=node1[5:],
+                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+            self.canvas_a_star.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
+                                           x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+                                           fill="forest green", outline="forest green")
+            self.canvas_a_star.create_text(x_coord2, y_coord2, text=node2[5:],
+                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
         else:
             x_coord1 = node_dict_dijkstra[node1]["x"]
             y_coord1 = node_dict_dijkstra[node1]["y"]
@@ -784,14 +837,14 @@ class AStarVsDijkstra(tk.Frame):
             y_coord2 = node_dict_dijkstra[node2]["y"]
 
             self.canvas_dijkstra.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill="forest green",
-                                           width=self.node_size / 2)
+                                             width=self.node_size / 2)
             self.canvas_dijkstra.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2,
-                                           x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
-                                           fill="forest green", outline="forest green")
+                                             x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
+                                             fill="forest green", outline="forest green")
             self.canvas_dijkstra.create_text(x_coord1, y_coord1, text=node1[5:],
-                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+                                             font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
             self.canvas_dijkstra.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2,
-                                           x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
-                                           fill="forest green", outline="forest green")
+                                             x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+                                             fill="forest green", outline="forest green")
             self.canvas_dijkstra.create_text(x_coord2, y_coord2, text=node2[5:],
-                                           font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+                                             font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")

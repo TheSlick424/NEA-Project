@@ -29,7 +29,10 @@ class MainScreen(tk.Tk):
         self.menu.add_cascade(label= "Create Graph", menu= self.create_graph_menu)
         self.create_graph_menu.add_command(label= "Create Manual Graph", command= self.manual_graph_sidebar)
         self.create_graph_menu.add_command(label= "Create Random Graph", command= self.random_graph_sidebar)
-        self.create_graph_menu.add_command(label= "A* Algorithm vs Dijkstra's", command= self.a_star_vs_dijkstra)
+
+        self.compare_graph_menu = tk.Menu(self.menu, tearoff= 0)
+        self.menu.add_cascade(label= "Compare Algorithms", menu= self.compare_graph_menu)
+        self.compare_graph_menu.add_command(label= "A* Algorithm vs Dijkstra's", command= self.a_star_vs_dijkstra)
 
     def manual_graph_sidebar(self):
         self.canvas.canvas.delete("all")
