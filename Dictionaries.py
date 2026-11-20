@@ -1,3 +1,9 @@
 node_dict = {}
 node_dict_copy = {}
 THE_path = {}
+node_dict_a_star = {}
+node_dict_a_star_copy = {}
+node_dict_dijkstra = {}
+node_dict_dijkstra_copy = {}
+THE_path_a_star = {}
+THE_path_dijkstra = {}
