@@ -264,155 +264,102 @@ class CanvasFrame(tk.Frame):
         node_dict.clear()
         node_dict_copy.clear()
         self.canvas.delete("all")
-        num = math.ceil(math.sqrt(nodes))
-        cols = 0
-        rows = 0
 
-        for i in range(num, 0, -1):
-            if nodes % i == 0:
-                cols = i
-                rows = nodes // i
-                break
+        canvas_width = self.canvas.winfo_width()
+        canvas_height = self.canvas.winfo_height()
 
-        cell_height = self.canvas.winfo_height() // rows
-        cell_width = self.canvas.winfo_width() // cols
+        cols = math.ceil(math.sqrt(nodes * canvas_width / canvas_height))
+        rows = math.ceil(nodes / cols)
 
-        self.node_size = math.ceil(min(cell_height, cell_width) // 1.5)
-
-        node_count = 1
-        x_end = randint((cols - 1) * cell_width + self.node_size // 2, cols * cell_width - self.node_size // 2)
-        y_end = randint((rows - 1) * cell_height + self.node_size // 2, rows * cell_height - self.node_size // 2)
+        nodes_per_row = nodes // rows
+        extra_nodes = nodes % rows
+        row_nodes = [nodes_per_row for _ in range(rows)]
 
         for row in range(rows):
-            for col in range(cols):
-                if node_count > nodes:
-                    break
+            if extra_nodes == 0:
+                break
+            else:
+                if row < extra_nodes:
+                    row_nodes[row] += 1
 
-                cell_x1 = col * cell_width
-                cell_y1 = row * cell_height
-                cell_x2 = cell_x1 + cell_width
-                cell_y2 = cell_y1 + cell_height
 
-                x = randint(cell_x1 + self.node_size // 2, cell_x2 - self.node_size // 2)
-                y = randint(cell_y1 + self.node_size // 2, cell_y2 - self.node_size // 2)
+        node_count = 1
+        for row in range(rows):
+            x_spacing = canvas_width / row_nodes[row]
+            y_spacing = canvas_height / rows
+            self.node_size = y_spacing / 1.5
+            if self.node_size > 100:
+                self.node_size = 100
+
+            for node in range(row_nodes[row]):
+                x_coord = (node + 0.2) * x_spacing + randint(-math.floor(x_spacing * 0.1), math.floor(x_spacing * 0.1))
+                y_coord = y_spacing * (row + (0.2)) + randint(-math.floor(y_spacing * 0.1), math.floor(y_spacing * 0.1))
 
                 if node_count == 1:
-                    self.canvas.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2, y + self.node_size / 2, fill = "green", outline= "green")
-                    self.canvas.create_text(x, y, text= node_count, font= ("Helvetica", math.floor(self.node_size / 2.5)), fill= "black")
-                    node_dict[f"Node {node_count}"] = {"x": x,
-                                                       "y": y,
+                    node_dict[f"Node {node_count}"] = {"x": x_coord + self.node_size / 2,
+                                                       "y": y_coord + self.node_size / 2,
                                                        "row": row,
-                                                       "column": col,
+                                                       "column": node,
                                                        "Start": True,
                                                        "End": False,
-                                                       "Heuristic": math.ceil(math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
+                                                       "Heuristic": 0,
                                                        "Neighbours": {},
                                                        "Checked": False}
-
-                    node_dict_copy[f"Node {node_count}"] = {"x": x,
-                                                            "y": y,
-                                                            "row": row,
-                                                            "column": col,
-                                                            "Start": True,
-                                                            "End": False,
-                                                            "Heuristic": math.ceil(math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
-                                                            "Neighbours": {},
-                                                            "Checked": False}
-                elif node_count == nodes:
-                    x = x_end
-                    y = y_end
-                    self.canvas.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2, y + self.node_size / 2, fill = "black", outline= "black")
-                    self.canvas.create_text(x, y, text= node_count, font= ("Helvetica", math.floor(self.node_size / 2.5)), fill= "white")
-                    node_dict[f"Node {node_count}"] = {"x": x,
-                                                       "y": y,
+                    node_dict_copy[f"Node {node_count}"] = {"x": x_coord + self.node_size / 2,
+                                                       "y": y_coord + self.node_size / 2,
                                                        "row": row,
-                                                       "column": col,
+                                                       "column": node,
+                                                       "Start": True,
+                                                       "End": False,
+                                                       "Heuristic": 0,
+                                                       "Neighbours": {},
+                                                       "Checked": False}
+                elif node_count == nodes:
+                    node_dict[f"Node {node_count}"] = {"x": x_coord + self.node_size / 2,
+                                                       "y": y_coord + self.node_size / 2,
+                                                       "row": row,
+                                                       "column": node,
                                                        "Start": False,
                                                        "End": True,
                                                        "Heuristic": 0,
                                                        "Neighbours": {},
                                                        "Checked": False}
-
-                    node_dict_copy[f"Node {node_count}"] = {"x": x,
-                                                            "y": y,
-                                                            "row": row,
-                                                            "column": col,
-                                                            "Start": False,
-                                                            "End": True,
-                                                            "Heuristic": 0,
-                                                            "Neighbours": {},
-                                                            "Checked": False}
-                else:
-                    self.canvas.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2, y + self.node_size / 2, fill = "red", outline= "red")
-                    self.canvas.create_text(x, y, text=node_count, font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
-                    node_dict[f"Node {node_count}"] = {"x": x,
-                                                       "y": y,
+                    node_dict_copy[f"Node {node_count}"] = {"x": x_coord + self.node_size / 2,
+                                                       "y": y_coord + self.node_size / 2,
                                                        "row": row,
-                                                       "column": col,
+                                                       "column": node,
                                                        "Start": False,
-                                                       "End": False,
-                                                       "Heuristic": math.ceil(math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
+                                                       "End": True,
+                                                       "Heuristic": 0,
                                                        "Neighbours": {},
                                                        "Checked": False}
-
-                    node_dict_copy[f"Node {node_count}"] = {"x": x,
-                                                            "y": y,
-                                                            "row": row,
-                                                            "column": col,
-                                                            "Start": False,
-                                                            "End": False,
-                                                            "Heuristic": math.ceil(math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
-                                                            "Neighbours": {},
-                                                            "Checked": False}
-
+                else:
+                    node_dict[f"Node {node_count}"] = {"x": x_coord + self.node_size / 2,
+                                                       "y": y_coord + self.node_size / 2,
+                                                       "row": row,
+                                                       "column": node,
+                                                       "Start": False,
+                                                       "End": False,
+                                                       "Heuristic": 0,
+                                                       "Neighbours": {},
+                                                       "Checked": False}
+                    node_dict_copy[f"Node {node_count}"] = {"x": x_coord + self.node_size / 2,
+                                                       "y": y_coord + self.node_size / 2,
+                                                       "row": row,
+                                                       "column": node,
+                                                       "Start": False,
+                                                       "End": False,
+                                                       "Heuristic": 0,
+                                                       "Neighbours": {},
+                                                       "Checked": False}
                 node_count += 1
 
         for node in node_dict:
-            if node_dict[node]["Heuristic"] >= (5/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
-                red = 200
-                green = 100
-                blue = 100
-                interpolation = ((node_dict[node]["Heuristic"] - (5/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2))/
-                ((1/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2)))
-                green += (100 - round(interpolation*100))
-            elif (4/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (5/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
-                red = 200
-                green = 200
-                blue = 100
-                interpolation = ((node_dict[node]["Heuristic"] - (4/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
-                                 ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
-                red -= (100 - round(interpolation*100))
-            elif (3/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (4/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
-                red = 100
-                green = 200
-                blue = 100
-                interpolation = ((node_dict[node]["Heuristic"] - (3/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
-                                 ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
-                blue += (100 - round(interpolation * 100))
-            elif (2/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (3/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
-                red = 100
-                green = 200
-                blue = 200
-                interpolation = ((node_dict[node]["Heuristic"] - (2/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
-                                 ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
-                green -= (100 - round(interpolation*100))
-            elif (1/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (2/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
-                red = 100
-                green = 100
-                blue = 200
-                interpolation = ((node_dict[node]["Heuristic"] - (1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
-                                 ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
-                red += (100 - round(interpolation * 100))
-            else:
-                red = 200
-                green = 100
-                blue = 200
-                interpolation = ((node_dict[node]["Heuristic"]) /
-                                 ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
-                blue -= (100 - round(interpolation * 100))
+            if node[5:] != nodes:
+                node_dict[node]["Heuristic"] = math.ceil(math.sqrt((node_dict[f"Node {nodes}"]["x"] - node_dict[node]["x"])**2 +
+                                                                   (node_dict[f"Node {nodes}"]["y"] - node_dict[node]["y"])**2))
 
-            colour = "#" + str(hex(red).split("x")[-1]) + str(hex(green).split("x")[-1]) + str(hex(blue).split("x")[-1])
-
+        for node in node_dict:
             if nodes <= 10:
                 edges = randint(1, 2)
             elif 11 < nodes < 300:
@@ -420,8 +367,11 @@ class CanvasFrame(tk.Frame):
             else:
                 edges = randint(1, 7)
 
-            close_nodes = [int(node[5:]) - 1, int(node[5:]) + 1, int(node[5:]) + cols, int(node[5:]) - cols, int(node[5:]) + cols - 1,
-                           int(node[5:]) + cols + 1, int(node[5:]) - cols - 1, int(node[5:]) - cols + 1]
+            close_nodes = [int(node[5:]) - 1, int(node[5:]) + 1, int(node[5:]) + cols, int(node[5:]) - cols,
+                           int(node[5:]) + cols - 1, int(node[5:]) + cols + 1, int(node[5:]) - cols - 1,
+                           int(node[5:]) - cols + 1, int(node[5:]) + cols - 2, int(node[5:]) + cols + 2]
+
+            colour = self.calculate_colour(node_dict[node]["Heuristic"])
 
             for i in range(edges + 1):
                 connected_node = choice(close_nodes)
@@ -480,6 +430,259 @@ class CanvasFrame(tk.Frame):
                                             fill=colour, outline=colour)
                     self.canvas.create_text(x_coord2, y_coord2, text=connected_node, font=("Helvetica", math.floor(self.node_size / 2.5)),
                                             fill="black")
+
+    def calculate_colour(self, heuristic):
+        if heuristic >= (5 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2):
+            red = 200
+            green = 100
+            blue = 100
+            interpolation = ((heuristic - (5 / 6) * math.sqrt(
+                self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+                             ((1 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+            green += (100 - round(interpolation * 100))
+        elif (4 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2) <= heuristic < (5 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2):
+            red = 200
+            green = 200
+            blue = 100
+            interpolation = ((heuristic - (4 / 6) * math.sqrt(
+                self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+                             ((1 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+            red -= (100 - round(interpolation * 100))
+        elif (3 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2) <= heuristic < (4 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2):
+            red = 100
+            green = 200
+            blue = 100
+            interpolation = ((heuristic - (3 / 6) * math.sqrt(
+                self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+                             ((1 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+            blue += (100 - round(interpolation * 100))
+        elif (2 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2) <= heuristic < (3 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2):
+            red = 100
+            green = 200
+            blue = 200
+            interpolation = ((heuristic - (2 / 6) * math.sqrt(
+                self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+                             ((1 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+            green -= (100 - round(interpolation * 100))
+        elif (1 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2) <= heuristic < (2 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2):
+            red = 100
+            green = 100
+            blue = 200
+            interpolation = ((heuristic - (1 / 6) * math.sqrt(
+                self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+                             ((1 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+            red += (100 - round(interpolation * 100))
+        else:
+            red = 200
+            green = 100
+            blue = 200
+            interpolation = (heuristic /
+                             ((1 / 6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+            blue -= (100 - round(interpolation * 100))
+
+        return "#" + str(hex(red).split("x")[-1]) + str(hex(green).split("x")[-1]) + str(hex(blue).split("x")[-1])
+
+        # node_count = 1
+        # x_end = randint((cols - 1) * cell_width + self.node_size // 2, cols * cell_width - self.node_size // 2)
+        # y_end = randint((rows - 1) * cell_height + self.node_size // 2, rows * cell_height - self.node_size // 2)
+        #
+        # for row in range(rows):
+        #     for col in range(cols):
+        #         if node_count > nodes:
+        #             break
+        #
+        #         cell_x1 = col * cell_width
+        #         cell_y1 = row * cell_height
+        #         cell_x2 = cell_x1 + cell_width
+        #         cell_y2 = cell_y1 + cell_height
+        #
+        #         x = randint(cell_x1 + self.node_size // 2, cell_x2 - self.node_size // 2)
+        #         y = randint(cell_y1 + self.node_size // 2, cell_y2 - self.node_size // 2)
+        #
+        #         if node_count == 1:
+        #             self.canvas.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2, y + self.node_size / 2, fill = "green", outline= "green")
+        #             self.canvas.create_text(x, y, text= node_count, font= ("Helvetica", math.floor(self.node_size / 2.5)), fill= "black")
+        #             node_dict[f"Node {node_count}"] = {"x": x,
+        #                                                "y": y,
+        #                                                "row": row,
+        #                                                "column": col,
+        #                                                "Start": True,
+        #                                                "End": False,
+        #                                                "Heuristic": math.ceil(math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
+        #                                                "Neighbours": {},
+        #                                                "Checked": False}
+        #
+        #             node_dict_copy[f"Node {node_count}"] = {"x": x,
+        #                                                     "y": y,
+        #                                                     "row": row,
+        #                                                     "column": col,
+        #                                                     "Start": True,
+        #                                                     "End": False,
+        #                                                     "Heuristic": math.ceil(math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
+        #                                                     "Neighbours": {},
+        #                                                     "Checked": False}
+        #         elif node_count == nodes:
+        #             x = x_end
+        #             y = y_end
+        #             self.canvas.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2, y + self.node_size / 2, fill = "black", outline= "black")
+        #             self.canvas.create_text(x, y, text= node_count, font= ("Helvetica", math.floor(self.node_size / 2.5)), fill= "white")
+        #             node_dict[f"Node {node_count}"] = {"x": x,
+        #                                                "y": y,
+        #                                                "row": row,
+        #                                                "column": col,
+        #                                                "Start": False,
+        #                                                "End": True,
+        #                                                "Heuristic": 0,
+        #                                                "Neighbours": {},
+        #                                                "Checked": False}
+        #
+        #             node_dict_copy[f"Node {node_count}"] = {"x": x,
+        #                                                     "y": y,
+        #                                                     "row": row,
+        #                                                     "column": col,
+        #                                                     "Start": False,
+        #                                                     "End": True,
+        #                                                     "Heuristic": 0,
+        #                                                     "Neighbours": {},
+        #                                                     "Checked": False}
+        #         else:
+        #             self.canvas.create_oval(x - self.node_size / 2, y - self.node_size / 2, x + self.node_size / 2, y + self.node_size / 2, fill = "red", outline= "red")
+        #             self.canvas.create_text(x, y, text=node_count, font=("Helvetica", math.floor(self.node_size / 2.5)), fill="black")
+        #             node_dict[f"Node {node_count}"] = {"x": x,
+        #                                                "y": y,
+        #                                                "row": row,
+        #                                                "column": col,
+        #                                                "Start": False,
+        #                                                "End": False,
+        #                                                "Heuristic": math.ceil(math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
+        #                                                "Neighbours": {},
+        #                                                "Checked": False}
+        #
+        #             node_dict_copy[f"Node {node_count}"] = {"x": x,
+        #                                                     "y": y,
+        #                                                     "row": row,
+        #                                                     "column": col,
+        #                                                     "Start": False,
+        #                                                     "End": False,
+        #                                                     "Heuristic": math.ceil(math.sqrt((x_end - x) ** 2 + (y_end - y) ** 2)),
+        #                                                     "Neighbours": {},
+        #                                                     "Checked": False}
+        #
+        #         node_count += 1
+        #
+        # for node in node_dict:
+        #     if node_dict[node]["Heuristic"] >= (5/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
+        #         red = 200
+        #         green = 100
+        #         blue = 100
+        #         interpolation = ((node_dict[node]["Heuristic"] - (5/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2))/
+        #         ((1/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2)))
+        #         green += (100 - round(interpolation*100))
+        #     elif (4/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (5/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
+        #         red = 200
+        #         green = 200
+        #         blue = 100
+        #         interpolation = ((node_dict[node]["Heuristic"] - (4/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+        #                          ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+        #         red -= (100 - round(interpolation*100))
+        #     elif (3/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (4/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
+        #         red = 100
+        #         green = 200
+        #         blue = 100
+        #         interpolation = ((node_dict[node]["Heuristic"] - (3/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+        #                          ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+        #         blue += (100 - round(interpolation * 100))
+        #     elif (2/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (3/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
+        #         red = 100
+        #         green = 200
+        #         blue = 200
+        #         interpolation = ((node_dict[node]["Heuristic"] - (2/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+        #                          ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+        #         green -= (100 - round(interpolation*100))
+        #     elif (1/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2) <= node_dict[node]["Heuristic"] < (2/6)*math.sqrt(self.canvas.winfo_width()**2 + self.canvas.winfo_height()**2):
+        #         red = 100
+        #         green = 100
+        #         blue = 200
+        #         interpolation = ((node_dict[node]["Heuristic"] - (1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)) /
+        #                          ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+        #         red += (100 - round(interpolation * 100))
+        #     else:
+        #         red = 200
+        #         green = 100
+        #         blue = 200
+        #         interpolation = ((node_dict[node]["Heuristic"]) /
+        #                          ((1/6) * math.sqrt(self.canvas.winfo_width() ** 2 + self.canvas.winfo_height() ** 2)))
+        #         blue -= (100 - round(interpolation * 100))
+
+            #colour = "#" + str(hex(red).split("x")[-1]) + str(hex(green).split("x")[-1]) + str(hex(blue).split("x")[-1])
+        #
+        #     if nodes <= 10:
+        #         edges = randint(1, 2)
+        #     elif 11 < nodes < 300:
+        #         edges = randint(1, 5)
+        #     else:
+        #         edges = randint(1, 7)
+        #
+        #     close_nodes = [int(node[5:]) - 1, int(node[5:]) + 1, int(node[5:]) + cols, int(node[5:]) - cols, int(node[5:]) + cols - 1,
+        #                    int(node[5:]) + cols + 1, int(node[5:]) - cols - 1, int(node[5:]) - cols + 1]
+        #
+            # for i in range(edges + 1):
+            #     connected_node = choice(close_nodes)
+            #     while int(connected_node) < 1 or int(connected_node) > nodes or connected_node in node_dict[node]["Neighbours"] \
+            #             or (node_dict[node]["row"] == node_dict[f"Node {connected_node}"]["row"] and max(int(node[5:]),
+            #                                                                                              int(connected_node)) - min(int(node[5:]), int(connected_node)) != 1)\
+            #             or (max(int(node_dict[node]["row"]), int(node_dict[f"Node {connected_node}"]["row"])) - min(int(node_dict[node]["row"]),
+            #                                                                                                         int(node_dict[f"Node {connected_node}"]["row"])) > 1)\
+            #             or (max(int(node_dict[node]["column"]), int(node_dict[f"Node {connected_node}"]["column"])) - min(int(node_dict[node]["column"]),
+            #                                                                                                               int(node_dict[f"Node {connected_node}"]["column"])) > 1):
+            #         connected_node = choice(close_nodes)
+            #
+            #     weight = math.ceil(math.sqrt((node_dict[node]["x"] - node_dict[f"Node {connected_node}"]["x"])**2 +
+            #                        (node_dict[node]["y"] - node_dict[f"Node {connected_node}"]["y"])**2))
+            #
+            #     node_dict[node]["Neighbours"][f"Node {connected_node}"] = weight
+            #     node_dict_copy[node]["Neighbours"][f"Node {connected_node}"] = weight
+            #     node_dict[f"Node {connected_node}"]["Neighbours"][node] = weight
+            #     node_dict_copy[f"Node {connected_node}"]["Neighbours"][node] = weight
+            #
+            #     x_coord1 = node_dict[node]["x"]
+            #     y_coord1 = node_dict[node]["y"]
+            #     x_coord2 = node_dict[f"Node {connected_node}"]["x"]
+            #     y_coord2 = node_dict[f"Node {connected_node}"]["y"]
+            #
+            #     self.canvas.create_line(x_coord1, y_coord1, x_coord2, y_coord2, fill= "gray50", width = self.node_size / 20)
+            #
+            #     if node_dict[node]["Start"]:
+            #         self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
+            #                                 fill="DarkGreen", outline="green")
+            #         self.canvas.create_text(x_coord1, y_coord1, text=node[5:], font=("Helvetica", math.floor(self.node_size / 2.5)),
+            #                                 fill="black")
+            #     elif node_dict[node]["End"]:
+            #         self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
+            #                                 fill="purple4", outline="purple4")
+            #         self.canvas.create_text(x_coord1, y_coord1, text=node[5:], font=("Helvetica", math.floor(self.node_size / 2.5)),
+            #                                 fill="white")
+            #     else:
+            #         self.canvas.create_oval(x_coord1 - self.node_size / 2, y_coord1 - self.node_size / 2, x_coord1 + self.node_size / 2, y_coord1 + self.node_size / 2,
+            #                                 fill=colour, outline=colour)
+            #         self.canvas.create_text(x_coord1, y_coord1, text=node[5:], font=("Helvetica", math.floor(self.node_size / 2.5)),
+            #                                 fill="black")
+            #
+            #     if node_dict[f"Node {connected_node}"]["Start"]:
+            #         self.canvas.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+            #                                 fill="DarkGreen", outline="green")
+            #         self.canvas.create_text(x_coord2, y_coord2, text=connected_node, font=("Helvetica", math.floor(self.node_size / 2.5)),
+            #                                 fill="black")
+            #     elif node_dict[f"Node {connected_node}"]["End"]:
+            #         self.canvas.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+            #                                 fill="purple4", outline="purple4")
+            #         self.canvas.create_text(x_coord2, y_coord2, text=connected_node, font=("Helvetica", math.floor(self.node_size / 2.5)),
+            #                                 fill="white")
+            #     else:
+            #         self.canvas.create_oval(x_coord2 - self.node_size / 2, y_coord2 - self.node_size / 2, x_coord2 + self.node_size / 2, y_coord2 + self.node_size / 2,
+            #                                 fill=colour, outline=colour)
+            #         self.canvas.create_text(x_coord2, y_coord2, text=connected_node, font=("Helvetica", math.floor(self.node_size / 2.5)),
+            #                                 fill="black")
 
     def new_shortest_node_visual_rand(self, node):
         x_coord = node_dict[node]["x"]
